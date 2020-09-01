@@ -9,9 +9,13 @@ Snippy is a linux snippet manager with powerfull features !
 ### Clipboard
 
 * Restore current clipboard after pasting the snippet
-* `{clipboard}` placeholder to use current clipboard in snippet
+* `{clipboard}` placeholder to use current clipboard in snippet, ex:
 ```
 CREATE DATABASE \`{clipboard}\` CHARACTER SET utf8 COLLATE utf8_general_ci;
+```
+* `{clipboard_urlencode}` placeholder to use current clipboard in snippet with urlencode format, ex:
+```
+https://cachedview.nl/#{clipboard_urlencode}
 ```
 
 ### Cursor
