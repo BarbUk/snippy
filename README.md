@@ -62,3 +62,22 @@ If you have the following snippets, the `terminal` icon will be displayed in rof
 ```
 
 ![icons](img/icons.png)
+
+### Cli
+
+```bash
+# snippy -h
+
+Usage:
+	/usr/bin/snippy [OPTION] ACTION
+	Snippy snippets manager
+Options
+	-h, --help Show help
+Actions
+	gui	 Browse snippet and paste it in the focused window (default)
+	cli	 list snippet in cli mode, only copy snippet in the paste buffer
+	edit	 Browse snippet and edit it
+	add	 Add a new snippet
+	list	 list snippet
+	cat	 list category
+```
