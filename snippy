@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 #
-# augmented by barbuk: https://github.com/BarbUk/dotfiles/blob/master/bin/snippy
+# augmented by barbuk: https://github.com/BarbUk/snippy
 #  . restore current clipboard
 #  . {clipboard} placeholder to use current clipboard in snippet
 #  . {cursor} placeholder to place the cursor
