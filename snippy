@@ -145,7 +145,7 @@ move_cursor() {
 init() {
     # Check basic dependency
     local all_needed_programs_installed=true
-    local needed_programs=( rofi fzf xsel xclip jq )
+    local needed_programs=( rofi fzf xsel xclip jq xdotool )
     for program in "${needed_programs[@]}"; do
         if ! command -v "$program" >/dev/null 2>&1; then
             all_needed_programs_installed=false
