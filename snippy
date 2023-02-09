@@ -28,14 +28,14 @@
 # distro in the usual way.
 #
 # To use:
-# 1. Create the directory ~/.snippy
+# 1. Create the directory ~/.config/snippy
 #
 # 2. Create a file in that directory for each snippet that you want.
 #    The filename will be used as a menu item, so you might want to
 #    omit the file extension when you name the file.
 #
 #    TIP: If you have a lot of snippets, you can organise them into
-#    subdirectories under ~/.snippy.
+#    subdirectories under ~/.config/snippy.
 #
 #    TIP: The name of the subdirectory will be passed to rofi as an icon name
 #
