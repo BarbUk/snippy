@@ -400,6 +400,9 @@ run() {
 
         move_cursor "Left" $cursor_position
 
+        # We need a little pause to handle the time to have the content of tmpfile pasted if is_gui
+        sleep "$focus_wait"
+
         # Restore current clipboard
         echo -ne "$current_clipboard" | xsel --clipboard --input
     fi
