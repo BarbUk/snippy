@@ -392,7 +392,7 @@ run() {
             xdotool key ctrl+v sleep "$focus_wait"
             move_cursor "Up" $cursor_line_position
         else
-            xdotool key ctrl+shift+v
+            xdotool key ctrl+shift+v sleep "$focus_wait"
             if is_vim; then
                 move_cursor "Up" $cursor_line_position
             fi
