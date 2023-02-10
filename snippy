@@ -392,13 +392,16 @@ run() {
             xdotool key ctrl+v sleep "$focus_wait"
             move_cursor "Up" $cursor_line_position
         else
-            xdotool key ctrl+shift+v
+            xdotool key ctrl+shift+v sleep "$focus_wait"
             if is_vim; then
                 move_cursor "Up" $cursor_line_position
             fi
         fi
 
         move_cursor "Left" $cursor_position
+
+        # We need a little pause to handle the time to have the content of tmpfile pasted if is_gui
+        sleep "$focus_wait"
 
         # Restore current clipboard
         echo -ne "$current_clipboard" | xsel --clipboard --input
