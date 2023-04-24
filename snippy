@@ -55,6 +55,10 @@ readonly rofi_args=(-no-lazy-grab -dmenu -i -sort -sorting-method fzf -async-pre
 readonly fzf_args=(--select-1 --reverse --inline-info --multi --preview '( bat --style auto --color always --language bash {} 2> /dev/null || highlight --force -O ansi -l {} 2> /dev/null ) | head -200' -1)
 readonly focus_wait=0.15
 
+# Detect Wayland.  focus_wait_ms is used, as wtype uses milliseconds instead of seconds.
+readonly is_wayland="${WAYLAND_DISPLAY:+1}"
+readonly focus_wait_ms=150
+
 # Placeholders
 readonly placeholder_cursor="{cursor}"
 readonly placeholder_clipboard="{clipboard}"
@@ -97,9 +101,14 @@ bashdown_simple() {
 
 # Detect if focused app is a terminal or a gui
 is_gui() {
-    class="$(xprop -id "$(xdotool getwindowfocus)" WM_CLASS | cut -d'"' -f2 | tr '[:upper:]' '[:lower:]')"
+    if [[ $is_wayland ]]; then
+        class="$(swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true).app_id' | tr '[:upper:]' '[:lower:]')"
+    else
+        class="$(xprop -id "$(xdotool getwindowfocus)" WM_CLASS | cut -d'"' -f2 | tr '[:upper:]' '[:lower:]')"
+    fi
+
     # Return false if the class if a term
-    if [[ "$class" =~ term|tilda|kitty|alacritty ]]; then
+    if [[ "$class" =~ term|tilda|kitty|alacritty|foot|wezterm ]]; then
         return 1
     fi
     return 0
@@ -107,7 +116,12 @@ is_gui() {
 
 # Detect vim
 is_vim() {
-    name="$(xprop -id "$(xdotool getwindowfocus)" WM_NAME | cut -d'"' -f2)"
+    if [[ $is_wayland ]]; then
+        name="$(swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true).name' | tr '[:upper:]' '[:lower:]')"
+    else
+        name="$(xprop -id "$(xdotool getwindowfocus)" WM_NAME | cut -d'"' -f2)"
+    fi
+    
     # vim with `set title` set the term title with:
     # document - VIM
     if [[ "${name:(-3)}" == VIM ]]; then
@@ -138,14 +152,19 @@ move_cursor() {
             ((count-=1)) || true
         done
         # shellcheck disable=SC2086
-        xdotool key --delay 0.1 $keys
+        if [[ $is_wayland ]]; then
+            wtype -d 100 -P $keys
+        else
+            xdotool key --delay 0.1 $keys
+        fi
     fi
 }
 
 init() {
     # Check basic dependency
     local all_needed_programs_installed=true
-    local needed_programs=( rofi fzf xsel xclip jq xdotool )
+    [[ $is_wayland ]] && local needed_programs=( wofi fzf wtype wl-copy wl-paste jq ) \
+        || local needed_programs=( rofi fzf xsel xclip jq xdotool )
     for program in "${needed_programs[@]}"; do
         if ! command -v "$program" >/dev/null 2>&1; then
             all_needed_programs_installed=false
@@ -327,9 +346,21 @@ run() {
     fi
 
     # save current clipboard
-    current_clipboard=$(xsel --clipboard)
+    if [[ $is_wayland ]]; then
+        set +e
+        current_clipboard=$(wl-paste)
+        set -e
+    else
+        current_clipboard=$(xsel --clipboard)
+    fi
+
     # clear clipboard
-    xsel --clipboard --clear
+    if [[ $is_wayland ]]; then
+        wl-copy --clear
+    else
+        xsel --clipboard --clear
+    fi
+
     # replace {clipboard} by the clipboard content
     # use awk to handle correctly multiline clipboard
     if grep -q "$placeholder_clipboard" "$tmpfile"; then
@@ -378,9 +409,11 @@ run() {
 
     # Copy snippet in clipboard
     if is_rich_snippet "${snippets_directory}/${snippet}"; then
-        xclip -target text/html -selection clipboard -in -loops 1 < "$tmpfile"
+        [[ $is_wayland ]] && wl-copy --type text/html -o < "$tmpfile" \
+            || xclip -target text/html -selection clipboard -in -loops 1 < "$tmpfile"
     else
-        xsel --clipboard --input < "$tmpfile"
+        [[ $is_wayland ]] && wl-copy < "$tmpfile" \
+            || xsel --clipboard --input < "$tmpfile"
     fi
 
     if [ "$paste" = true ] ; then
@@ -389,10 +422,12 @@ run() {
             # We need a little pause to handle the time to focus on the window
             sleep "$focus_wait"
             # Paste
-            xdotool key ctrl+v sleep "$focus_wait"
+            [[ $is_wayland ]] && wtype -M ctrl v -m ctrl -s "$focus_wait_ms" \
+                || xdotool key ctrl+v sleep "$focus_wait"
             move_cursor "Up" $cursor_line_position
         else
-            xdotool key ctrl+shift+v sleep "$focus_wait"
+            [[ $is_wayland ]] && wtype -M ctrl -M shift v -m ctrl -m shift -s "$focus_wait_ms" \
+                || xdotool key ctrl+shift+v sleep "$focus_wait"
             if is_vim; then
                 move_cursor "Up" $cursor_line_position
             fi
@@ -404,7 +439,8 @@ run() {
         sleep "$focus_wait"
 
         # Restore current clipboard
-        echo -ne "$current_clipboard" | xsel --clipboard --input
+        [[ $is_wayland ]] && echo -ne "$current_clipboard" | wl-copy \
+            || echo -ne "$current_clipboard" | xsel --clipboard --input
     fi
 }
 
