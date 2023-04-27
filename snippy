@@ -349,9 +349,11 @@ run() {
 
     # save current clipboard
     if [[ $is_wayland ]]; then
-        set +e
+        # Disabling errexit for wl-paste,
+        # because it return 1 when they are nothing to paste
+        set +o errexit
         current_clipboard=$(wl-paste)
-        set -e
+        set -o errexit
     else
         current_clipboard=$(xsel --clipboard)
     fi
