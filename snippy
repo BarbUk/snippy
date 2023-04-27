@@ -132,7 +132,7 @@ is_vim() {
 
 # Find the index of a string in a string
 strindex() {
-    x="${1%%$2*}"
+    x="${1%%"$2"*}"
     [[ "$x" = "$1" ]] && echo -1 || echo "${#x}"
 }
 
