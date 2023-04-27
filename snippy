@@ -227,7 +227,6 @@ parse_options() {
     case "$1" in
       -h|--help)
         usage
-        exit
         ;;
       --) # end argument parsing
         shift
