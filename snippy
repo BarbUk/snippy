@@ -163,8 +163,11 @@ move_cursor() {
 init() {
     # Check basic dependency
     local all_needed_programs_installed=true
-    [[ $is_wayland ]] && local needed_programs=( wofi fzf wtype wl-copy wl-paste jq ) \
-        || local needed_programs=( rofi fzf xsel xclip jq xdotool )
+    if [[ $is_wayland ]]; then
+        local needed_programs=( wofi fzf wtype wl-copy wl-paste jq )
+    else
+        local needed_programs=( rofi fzf xsel xclip jq xdotool )
+    fi
     for program in "${needed_programs[@]}"; do
         if ! command -v "$program" >/dev/null 2>&1; then
             all_needed_programs_installed=false
@@ -409,11 +412,17 @@ run() {
 
     # Copy snippet in clipboard
     if is_rich_snippet "${snippets_directory}/${snippet}"; then
-        [[ $is_wayland ]] && wl-copy --type text/html -o < "$tmpfile" \
-            || xclip -target text/html -selection clipboard -in -loops 1 < "$tmpfile"
+        if [[ $is_wayland ]]; then
+            wl-copy --type text/html -o < "$tmpfile"
+        else
+            xclip -target text/html -selection clipboard -in -loops 1 < "$tmpfile"
+        fi
     else
-        [[ $is_wayland ]] && wl-copy < "$tmpfile" \
-            || xsel --clipboard --input < "$tmpfile"
+        if [[ $is_wayland ]]; then
+            wl-copy < "$tmpfile"
+        else
+            xsel --clipboard --input < "$tmpfile"
+        fi
     fi
 
     if [ "$paste" = true ] ; then
@@ -422,12 +431,18 @@ run() {
             # We need a little pause to handle the time to focus on the window
             sleep "$focus_wait"
             # Paste
-            [[ $is_wayland ]] && wtype -M ctrl v -m ctrl -s "$focus_wait_ms" \
-                || xdotool key ctrl+v sleep "$focus_wait"
+            if [[ $is_wayland ]]; then
+                wtype -M ctrl v -m ctrl -s "$focus_wait_ms"
+            else
+                xdotool key ctrl+v sleep "$focus_wait"
+            fi
             move_cursor "Up" $cursor_line_position
         else
-            [[ $is_wayland ]] && wtype -M ctrl -M shift v -m ctrl -m shift -s "$focus_wait_ms" \
-                || xdotool key ctrl+shift+v sleep "$focus_wait"
+            if [[ $is_wayland ]]; then
+                wtype -M ctrl -M shift v -m ctrl -m shift -s "$focus_wait_ms"
+            else
+                xdotool key ctrl+shift+v sleep "$focus_wait"
+            fi
             if is_vim; then
                 move_cursor "Up" $cursor_line_position
             fi
@@ -439,8 +454,11 @@ run() {
         sleep "$focus_wait"
 
         # Restore current clipboard
-        [[ $is_wayland ]] && echo -ne "$current_clipboard" | wl-copy \
-            || echo -ne "$current_clipboard" | xsel --clipboard --input
+        if [[ $is_wayland ]]; then
+            echo -ne "$current_clipboard" | wl-copy
+        else
+            echo -ne "$current_clipboard" | xsel --clipboard --input
+        fi
     fi
 }
 
