@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 #
 # augmented by barbuk: https://github.com/BarbUk/snippy
 #  . restore current clipboard
