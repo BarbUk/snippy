@@ -51,7 +51,6 @@
 set -o errexit -o pipefail -o nounset
 
 readonly snippets_directory=${XDG_CONFIG_HOME:-$HOME/.config}/snippy
-readonly rofi_args=(-no-lazy-grab -dmenu -i -sort -sorting-method fzf -async-pre-read 20 -theme-str 'element-icon { size: 2.35ch;}' -kb-accept-custom "" -kb-custom-1 "Ctrl+Return")
 readonly fzf_args=(--select-1 --reverse --inline-info --multi --preview '( bat --style auto --color always --language bash {} 2> /dev/null || highlight --force -O ansi -l {} 2> /dev/null ) | head -200' -1)
 readonly focus_wait=0.15
 
@@ -73,9 +72,12 @@ readonly normal="\e[0m"
 readonly bold="\e[1m"
 readonly underline="\e[4m"
 
+# Default
 script_content=false
 action=gui
 snippet=
+rofi_sort="-sort"
+rofi_sort_method="-sorting-method fzf"
 
 # smarty like template engine which executes inline bash in (bashdown) strings (replaces variables with values e.g.)
 # @link http://github.com/coderofsalvation/bashdown
@@ -194,7 +196,9 @@ usage() {
     echo -e "\tSnippy snippets manager"
 
     echo "Options"
-    echo -e "\t-h, --help Show help"
+    echo -e "\t-h, --help: Show help"
+    echo -e "\t-s, --sort: true or false Sort snippet in rofi (default)"
+    echo -e "\t-m, --sorting-method: fzf (default) or levenshtein"
 
     echo "Actions"
     echo -ne "\t${bold}gui${normal}"
@@ -228,16 +232,37 @@ parse_options() {
         -h | --help)
             usage
             ;;
-        --) # end argument parsing
+        -s | --sort)
+            if [ "$2" = true ] || (( $2 == 1 )); then
+                rofi_sort="-sort"
+            elif [ "$2" = false ] || (( $2 == 0 )); then
+                rofi_sort="-no-sort"
+            else
+                echo -e "Sort should be set to ${bold}true${normal} or ${bold}false${normal}"
+                echo
+                usage
+            fi
             shift
+            ;;
+        -m | --sorting-method)
+            if [ "$2" = fzf ] || [ "$2" = levenshtein ]; then
+                rofi_sort_method="-sorting-method $2"
+            else
+                echo -e "Sorting method should be set to ${bold}fzf${normal} or ${bold}levenshtein${normal}"
+                echo
+                usage
+            fi
+            shift
+            ;;
+        --) # end argument parsing
             break
             ;;
         *)
             action="$1"
-            shift
             return
             ;;
         esac
+        shift
     done
 
 }
@@ -466,6 +491,18 @@ run() {
 
 main() {
     parse_options "$@"
+
+    readonly rofi_args=(
+        -no-lazy-grab
+        -dmenu
+        "$rofi_sort"
+        "$rofi_sort_method"
+        -async
+        -pre-read 20
+        -theme-str 'element-icon { size: 2.35ch;}'
+        -kb-accept-custom ""
+        -kb-custom-1 "Ctrl+Return"
+    )
 
     cd "${snippets_directory}" || exit
 
