@@ -85,7 +85,7 @@ snippet=
 # @param string - string with bash(down) syntax (usually surrounded by ' quotes instead of ")
 bashdown() {
     while IFS= read -r line; do
-        line="$(eval "printf -- \"$( printf "%s" "$line" | sed 's/"/\\"/g' )\"")";
+        line="$(eval "printf -- \"$(printf "%s" "$line" | sed 's/"/\\"/g')\"")"
         echo -e "$line"
     done
 }
@@ -93,10 +93,10 @@ bashdown() {
 # Simplified version of bashdown, use echo and bash var search and replace
 # Better handling of symbol char
 bashdown_simple() {
-  while IFS= read -r line || [[ -n "$line" ]]; do
-    line="$(eval "echo \"${line//\"/\\\"}\"")"
-    echo "$line"
-  done
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        line="$(eval "echo \"${line//\"/\\\"}\"")"
+        echo "$line"
+    done
 }
 
 # Detect if focused app is a terminal or a gui
@@ -121,7 +121,7 @@ is_vim() {
     else
         name="$(xprop -id "$(xdotool getwindowfocus)" WM_NAME | cut -d'"' -f2)"
     fi
-    
+
     # vim with `set title` set the term title with:
     # document - VIM
     if [[ "${name:(-3)}" == VIM ]]; then
@@ -147,9 +147,9 @@ move_cursor() {
     local count=$2
     local keys="End "
     if [[ $count -gt 0 ]]; then
-        until [  "$count" -eq 0 ]; do
+        until [ "$count" -eq 0 ]; do
             keys+="${key} "
-            ((count-=1)) || true
+            ((count -= 1)) || true
         done
         # shellcheck disable=SC2086
         if [[ $is_wayland ]]; then
@@ -164,9 +164,9 @@ init() {
     # Check basic dependency
     local all_needed_programs_installed=true
     if [[ $is_wayland ]]; then
-        local needed_programs=( wofi fzf wtype wl-copy wl-paste jq )
+        local needed_programs=(wofi fzf wtype wl-copy wl-paste jq)
     else
-        local needed_programs=( rofi fzf xsel xclip jq xdotool )
+        local needed_programs=(rofi fzf xsel xclip jq xdotool)
     fi
     for program in "${needed_programs[@]}"; do
         if ! command -v "$program" >/dev/null 2>&1; then
@@ -175,7 +175,7 @@ init() {
         fi
     done
 
-    if [ "$all_needed_programs_installed" = false ] ; then
+    if [ "$all_needed_programs_installed" = false ]; then
         echo -e "\nPlease install the previous dependancies"
         exit 1
     fi
@@ -184,7 +184,7 @@ init() {
     if [[ ! -d "$snippets_directory" ]]; then
         mkdir -p "$snippets_directory"
         echo "$snippets_directory created"
-        echo "hi it is \$(date)" > "$snippets_directory/test"
+        echo "hi it is \$(date)" >"$snippets_directory/test"
     fi
 }
 
@@ -223,41 +223,41 @@ usage() {
 
 parse_options() {
 
-  while (( "$#" )); do
-    case "$1" in
-      -h|--help)
-        usage
-        ;;
-      --) # end argument parsing
-        shift
-        break
-        ;;
-      *)
-        action="$1"
-        shift
-        return
-        ;;
-    esac
-  done
+    while (("$#")); do
+        case "$1" in
+        -h | --help)
+            usage
+            ;;
+        --) # end argument parsing
+            shift
+            break
+            ;;
+        *)
+            action="$1"
+            shift
+            return
+            ;;
+        esac
+    done
 
 }
 
 error() {
-  local message="$1"
-  echo "$message" >&2
+    local message="$1"
+    echo "$message" >&2
 }
 
 cli() {
-    snippet=$( list | fzf "${fzf_args[@]}")
+    snippet=$(list | fzf "${fzf_args[@]}")
 }
 
 list() {
     local type="${1:-f}"
 
-    find -L . -type "$type" \
-        | grep -vE '^\.$|\.git|\.gitconfig|\.gitkeep|\.gitignore' \
-        | sed -e 's!\.\/!!' \
-        | sort
+    find -L . -type "$type" |
+        grep -vE '^\.$|\.git|\.gitconfig|\.gitkeep|\.gitignore' |
+        sed -e 's!\.\/!!' |
+        sort
 }
 
 add() {
@@ -290,7 +290,7 @@ gui() {
     # shellcheck disable=SC2086
     set +o errexit
 
-    snippet=$( list | sed -re 's_^([^/]*)/(.*)_&\x0icon\x1f\1_' | rofi "${rofi_args[@]}" -p '❯ ')
+    snippet=$(list | sed -re 's_^([^/]*)/(.*)_&\x0icon\x1f\1_' | rofi "${rofi_args[@]}" -p '❯ ')
 
     if [ $? -eq 10 ]; then
         script_content=true
@@ -315,31 +315,32 @@ run() {
 
         # Custom selection, copy the script content without parsing
         elif [ "$script_content" = true ]; then
-            content="$( cat "${snippets_directory}/${snippet}" )"
+            content="$(cat "${snippets_directory}/${snippet}")"
 
         # don't parse file with the ##noparse header
         elif grep -qE "^##noparse" "${snippets_directory}/${snippet}"; then
-            content="$( tail -n +2 "${snippets_directory}/${snippet}" )"
+            content="$(tail -n +2 "${snippets_directory}/${snippet}")"
 
         # replace tmpfile for snippets with ##tmpfile header
         elif grep -qE "^##tmpfile" "${snippets_directory}/${snippet}"; then
-            content="$( bashdown_simple <<< "$(tail -n +2 "${snippets_directory}/${snippet}" | sed "s%\$tmpfile%$tmpfile%g" )" )"
+            content="$(bashdown_simple <<<"$(tail -n +2 "${snippets_directory}/${snippet}" | sed "s%\$tmpfile%$tmpfile%g")")"
 
         # execute bash script in scripts dir
         elif [[ $(dirname "${snippet}") == 'scripts' ]] && grep -qE "^#!/bin/bash" "${snippets_directory}/${snippet}"; then
-            content="$( bash "${snippets_directory}/${snippet}" )"
+            content="$(bash "${snippets_directory}/${snippet}")"
 
         # default action
         else
-            content="$( bashdown_simple < "${snippets_directory}/${snippet}" )"
+            content="$(bashdown_simple <"${snippets_directory}/${snippet}")"
         fi
 
         if [ -n "$content" ]; then
-            printf "%s" "$content" > "$tmpfile"
+            printf "%s" "$content" >"$tmpfile"
         fi
 
-    else [[ ${snippet} =~ ^$ ]]
-        ${snippet##*$} 2>/dev/null > "$tmpfile" # execute as bashcommand
+    else
+        [[ ${snippet} =~ ^$ ]]
+        ${snippet##*$} 2>/dev/null >"$tmpfile" # execute as bashcommand
     fi
 
     # if tmpfile is empty at this step, nothing to do.
@@ -379,7 +380,7 @@ run() {
 
     if grep -q "$placeholder_clipboard_urlencode" "$tmpfile"; then
         awk -i inplace \
-            -v clipboard="$( echo "$current_clipboard" | jq -sRr @uri)" \
+            -v clipboard="$(echo "$current_clipboard" | jq -sRr @uri)" \
             -v placeholder="$placeholder_clipboard_urlencode" \
             '{ gsub(placeholder, clipboard); print }' "$tmpfile"
 
@@ -398,15 +399,15 @@ run() {
         # retrieve the line
         cursor_line=$(grep $placeholder_cursor "$tmpfile")
         # calculate snippet total lines
-        file_lines=$(wc -l < "$tmpfile")
+        file_lines=$(wc -l <"$tmpfile")
         # determine the number of line to go up
-        cursor_line_position=$(( file_lines - cursor_line_position + 1 ))
+        cursor_line_position=$((file_lines - cursor_line_position + 1))
         # Extract cursor position
         cursor_position=$(strindex "$cursor_line" $placeholder_cursor)
         # total cursor line lenght
         cursor_line_lenght=${#cursor_line}
         # Compute the final cursor position ( 8 is the lenght of the placeholder {cursor} )
-        cursor_position=$(( cursor_line_lenght - cursor_position - 8 ))
+        cursor_position=$((cursor_line_lenght - cursor_position - 8))
         # remove the placeholder
         sed -i -e "s/$placeholder_cursor//g" "$tmpfile"
     fi
@@ -414,19 +415,19 @@ run() {
     # Copy snippet in clipboard
     if is_rich_snippet "${snippets_directory}/${snippet}"; then
         if [[ $is_wayland ]]; then
-            wl-copy --type text/html -o < "$tmpfile"
+            wl-copy --type text/html -o <"$tmpfile"
         else
-            xclip -target text/html -selection clipboard -in -loops 1 < "$tmpfile"
+            xclip -target text/html -selection clipboard -in -loops 1 <"$tmpfile"
         fi
     else
         if [[ $is_wayland ]]; then
-            wl-copy < "$tmpfile"
+            wl-copy <"$tmpfile"
         else
-            xsel --clipboard --input < "$tmpfile"
+            xsel --clipboard --input <"$tmpfile"
         fi
     fi
 
-    if [ "$paste" = true ] ; then
+    if [ "$paste" = true ]; then
         # Paste into the current application.
         if is_gui; then
             # We need a little pause to handle the time to focus on the window
@@ -469,31 +470,31 @@ main() {
     cd "${snippets_directory}" || exit
 
     case "$action" in
-        'gui' )
-            gui
-            run
+    'gui')
+        gui
+        run
         ;;
-        'cli' )
-            cli
-            run false
+    'cli')
+        cli
+        run false
         ;;
-        'list' )
-            list
+    'list')
+        list
         ;;
-        'cat' )
-            list d
+    'cat')
+        list d
         ;;
-        'add' )
-            shift
-            add "$@"
+    'add')
+        shift
+        add "$@"
         ;;
-        'edit' )
-            cli
-            edit
+    'edit')
+        cli
+        edit
         ;;
-        *)
-            error "Action $action does not exists"
-            exit 1
+    *)
+        error "Action $action does not exists"
+        exit 1
         ;;
     esac
 }
