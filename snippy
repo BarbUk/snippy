@@ -15,7 +15,7 @@
 #  . icons ! Icon name is set from first dir name. If you have the following snippets, the terminal icon will be displayed in rofi
 #    terminal/
 #    ├── other
-#    │   └── date
+#    │   └── date
 #    └── script
 #        └── test
 #
