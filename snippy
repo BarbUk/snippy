@@ -495,6 +495,7 @@ main() {
     readonly rofi_args=(
         -no-lazy-grab
         -dmenu
+        -i
         "$rofi_sort"
         "$rofi_sort_method"
         -async
