@@ -500,7 +500,7 @@ main() {
         "$rofi_sort_method"
         -async
         -pre-read 20
-        -theme-str 'element-icon { size: 2.35ch;}'
+        -theme-str 'element-icon { size: 2.35ch; }'
         -kb-accept-custom ""
         -kb-custom-1 "Ctrl+Return"
     )
