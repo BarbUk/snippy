@@ -210,7 +210,7 @@ usage() {
     echo -ne "\t${bold}edit${normal}"
     echo -e "\t Browse snippet and edit it"
 
-    echo -ne "\t${bold}add${normal}"
+    echo -ne "\t${bold}add${normal} snippet_name"
     echo -e "\t Add a new snippet"
 
     echo -ne "\t${bold}list${normal}"
@@ -287,6 +287,10 @@ list() {
 
 add() {
     local snippet="$*"
+
+    if [ -z "$snippet" ]; then
+        read -erp "Please enter a snippet name: " snippet
+    fi
     if [ -e "${snippet}" ]; then
         error "snippet ${snippet} already exists"
         return 1
