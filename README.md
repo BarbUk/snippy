@@ -22,8 +22,13 @@ $ yay -Sy snippy-snippet
 ### Download the script
 
 ```bash
+# For your local user usage
 curl -fsSL https://raw.githubusercontent.com/BarbUk/snippy/master/snippy --create-dirs --output ~/.bin/snippy
 chmod +x ~/.bin/snippy
+
+# Or install it systemwide
+sudo curl -fsSL https://raw.githubusercontent.com/BarbUk/snippy/master/snippy --output /usr/bin/snippy
+chmod +x /usr/bin/snippy
 ```
 
 ## Features
@@ -77,7 +82,7 @@ If you have the following snippets, the `terminal` icon will be displayed in rof
 ```
     terminal/
     ├── other/
-    │   └── date
+    │   └── date
     └── script/
         └── test
 ```
