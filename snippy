@@ -110,7 +110,7 @@ is_gui() {
     fi
 
     # Return false if the class if a term
-    if [[ "$class" =~ term|tilda|kitty|alacritty|foot|wezterm ]]; then
+    if [[ "$class" =~ term|tilda|kitty|alacritty|foot|wezterm|konsole|ghostty ]]; then
         return 1
     fi
     return 0
