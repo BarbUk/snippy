@@ -50,6 +50,8 @@
 #
 set -o errexit -o pipefail -o nounset
 
+readonly version=1.x-dev
+
 readonly snippets_directory=${XDG_CONFIG_HOME:-$HOME/.config}/snippy
 readonly fzf_args=(--select-1 --reverse --inline-info --multi --preview '( bat --style auto --color always --language bash {} 2> /dev/null || highlight --force -O ansi -l {} 2> /dev/null ) | head -200' -1)
 readonly focus_wait=0.15
@@ -191,6 +193,8 @@ init() {
 }
 
 usage() {
+    echo -e "${bold}$0${normal} $version"
+    echo
     echo "Usage:"
     echo -e "\t${bold}$0${normal} [OPTION] ACTION"
     echo -e "\tSnippy snippets manager"
@@ -231,6 +235,10 @@ parse_options() {
         case "$1" in
         -h | --help)
             usage
+            ;;
+        -v | --version)
+            echo "$version"
+            exit
             ;;
         -s | --sort)
             if [ "$2" = true ] || (( $2 == 1 )); then
