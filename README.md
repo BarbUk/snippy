@@ -4,6 +4,28 @@ Snippy is a linux snippet manager with powerfull features !
 
 ![snippy](img/snippy.png)
 
+## Install
+
+### Arch Linux
+[![snippy on AUR](https://img.shields.io/aur/version/snippy-snippet?label=snippy-snippet)](https://aur.archlinux.org/packages/snippy-snippet/)
+
+snippy is available on the [AUR](https://wiki.archlinux.org/index.php/Arch_User_Repository):
+- [snippy-snippet](https://aur.archlinux.org/packages/snippy-snippet/) (source release package)
+
+You can install it using your [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) of choice.
+
+Example:
+```bash
+$ yay -Sy snippy-snippet
+```
+
+### Download the script
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/BarbUk/snippy/master/snippy --create-dirs --output ~/.bin/snippy
+chmod +x ~/.bin/snippy
+```
+
 ## Features
 
 ### Clipboard
@@ -47,7 +69,6 @@ https://cachedview.nl/#{clipboard_urlencode}
   - using Return will paste the current date
   - using CTRL+Return will paste the command directly
   
-
 ### Icons !
 
 Icon name is set in rofi with the root directory name of your snippets.
