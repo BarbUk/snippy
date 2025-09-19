@@ -28,7 +28,7 @@ chmod +x ~/.bin/snippy
 
 # Or install it systemwide
 sudo curl -fsSL https://raw.githubusercontent.com/BarbUk/snippy/master/snippy --output /usr/bin/snippy
-chmod +x /usr/bin/snippy
+sudo chmod +x /usr/bin/snippy
 ```
 
 ## Features
