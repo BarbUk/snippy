@@ -1,8 +1,4 @@
 repos:
-  - repo: https://github.com/koalaman/shellcheck-precommit
-    rev: v0.11.0 # Use the latest stable version
-    hooks:
-      - id: shellcheck
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -10,3 +6,12 @@ repos:
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
     -   id: check-shebang-scripts-are-executable
+  - repo: local
+    hooks:
+    - id: shellcheck
+      name: shellcheck
+      description: Test shell scripts with shellcheck
+      entry: shellcheck
+      language: python
+      types: [shell]
+      require_serial: true
