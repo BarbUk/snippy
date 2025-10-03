@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: AUR package publisher
-        uses: BarbUk/aur-publish-docker-action@v1.0.1
+        uses: BarbUk/aur-publish-docker-action@v1.0.3
         with:
           package_name: snippy-snippet
           commit_username: 'BarbUk'
