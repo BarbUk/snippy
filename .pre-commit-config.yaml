@@ -3,3 +3,10 @@ repos:
     rev: v0.11.0 # Use the latest stable version
     hooks:
       - id: shellcheck
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+    -   id: check-shebang-scripts-are-executable
