@@ -321,6 +321,43 @@ edit() {
     $EDITOR "$snippet"
 }
 
+completion() {
+    cat <<'EOF'
+_snippy_completion() {
+    local cur prev opts actions
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="-h --help -v --version -s --sort -m --sorting-method"
+    actions="gui cli edit add list cat completion"
+
+    # Complete option values
+    case "${prev}" in
+        -s|--sort)
+            COMPREPLY=( $(compgen -W "true false" -- ${cur}) )
+            return 0
+            ;;
+        -m|--sorting-method)
+            COMPREPLY=( $(compgen -W "fzf levenshtein" -- ${cur}) )
+            return 0
+            ;;
+    esac
+
+    # Complete options and actions
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    else
+        COMPREPLY=( $(compgen -W "${actions}" -- ${cur}) )
+        return 0
+    fi
+}
+
+complete -F _snippy_completion snippy
+EOF
+}
+
 gui() {
     # Use the filenames in the snippy directory as menu entries.
     # Get the menu selection from the user.
@@ -541,6 +578,9 @@ main() {
     'edit')
         cli
         edit
+        ;;
+    'completion')
+        completion
         ;;
     *)
         error "Action $action does not exists"

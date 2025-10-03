@@ -73,7 +73,7 @@ https://cachedview.nl/#{clipboard_urlencode}
   - with the following snippet: `$(date +%Y-%m-%d-%Hh%Mm%S)`
   - using Return will paste the current date
   - using CTRL+Return will paste the command directly
-  
+
 ### Icons !
 
 Icon name is set in rofi with the root directory name of your snippets.
@@ -98,12 +98,28 @@ Usage:
 	/usr/bin/snippy [OPTION] ACTION
 	Snippy snippets manager
 Options
-	-h, --help Show help
+	-h, --help: Show help
+	-s, --sort: true or false Sort snippet in rofi (default)
+	-m, --sorting-method: fzf (default) or levenshtein
 Actions
 	gui	 Browse snippet and paste it in the focused window (default)
 	cli	 list snippet in cli mode, only copy snippet in the paste buffer
 	edit	 Browse snippet and edit it
-	add	 Add a new snippet
+	add snippet_name	 Add a new snippet
 	list	 list snippet
 	cat	 list category
+	completion	 bash completion
 ```
+
+### Bash Completion
+
+Snippy supports bash completion for all options and actions. To enable it, add the following to your `.bashrc` or `.bash_profile`:
+
+```bash
+eval "$(snippy completion)"
+```
+
+The completion will provide suggestions for:
+- Options: `-h`, `--help`, `-v`, `--version`, `-s`, `--sort`, `-m`, `--sorting-method`
+- Actions: `gui`, `cli`, `edit`, `add`, `list`, `cat`, `completion`
+- Option values: `true`/`false` for `--sort`, `fzf`/`levenshtein` for `--sorting-method`
