@@ -196,11 +196,11 @@ move_cursor() {
 
 init() {
   # Check basic dependency
-  local all_needed_programs_installed=true needed_programs=(rofi fzf)
+  local all_needed_programs_installed=true needed_programs=(rofi fzf jq)
   if [[ $is_wayland ]]; then
-    needed_programs+=(wtype wl-copy wl-paste jq)
+    needed_programs+=(wtype wl-copy wl-paste)
   else
-    needed_programs+=(xsel xclip jq xdotool)
+    needed_programs+=(xsel xclip xdotool)
   fi
   for program in "${needed_programs[@]}"; do
     if ! command -v "$program" >/dev/null 2>&1; then
