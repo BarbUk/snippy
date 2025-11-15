@@ -103,14 +103,47 @@ bashdown_simple() {
     done
 }
 
+get_focused_window_class() {
+    if [[ $is_wayland ]]; then
+        case "$DESKTOP_SESSION" in
+            niri)
+                niri msg --json focused-window  | jq -r '.app_id | ascii_downcase'
+                ;;
+            sway)
+                swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true).app_id | ascii_downcase'
+                ;;
+            hyprland)
+                hyprctl activewindow -j | jq -r '.class | ascii_downcase'
+                ;;
+        esac
+    else
+        xdotool getwindowfocus getwindowclassname | tr '[:upper:]' '[:lower:]'
+    fi
+}
+
+get_focused_window_name() {
+    if [[ $is_wayland ]]; then
+        case "$DESKTOP_SESSION" in
+            niri)
+                niri msg --json focused-window  | jq -r '.title'
+                ;;
+            sway)
+                swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true).name'
+                ;;
+            hyprland)
+                hyprctl activewindow -j | jq -r '.title'
+                ;;
+        esac
+    else
+        xdotool getwindowfocus getwindowname
+    fi
+}
+
 # Detect if focused app is a terminal or a gui
 is_gui() {
-    if [[ $is_wayland ]]; then
-        class="$(swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true).app_id' | tr '[:upper:]' '[:lower:]')"
-    else
-        class="$(xprop -id "$(xdotool getwindowfocus)" WM_CLASS | cut -d'"' -f2 | tr '[:upper:]' '[:lower:]')"
-    fi
+    local class
 
+    class=$(get_focused_window_class)
     # Return false if the class if a term
     if [[ "$class" =~ term|tilda|kitty|alacritty|foot|wezterm|konsole|ghostty ]]; then
         return 1
@@ -120,11 +153,8 @@ is_gui() {
 
 # Detect vim
 is_vim() {
-    if [[ $is_wayland ]]; then
-        name="$(swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true).name' | tr '[:upper:]' '[:lower:]')"
-    else
-        name="$(xprop -id "$(xdotool getwindowfocus)" WM_NAME | cut -d'"' -f2)"
-    fi
+    local name
+    name=$(get_focused_window_name)
 
     # vim with `set title` set the term title with:
     # document - VIM
@@ -166,11 +196,11 @@ move_cursor() {
 
 init() {
     # Check basic dependency
-    local all_needed_programs_installed=true
+    local all_needed_programs_installed=true needed_programs=(rofi fzf)
     if [[ $is_wayland ]]; then
-        local needed_programs=(wofi fzf wtype wl-copy wl-paste jq)
+        needed_programs+=(wtype wl-copy wl-paste jq)
     else
-        local needed_programs=(rofi fzf xsel xclip jq xdotool)
+        needed_programs+=(xsel xclip jq xdotool)
     fi
     for program in "${needed_programs[@]}"; do
         if ! command -v "$program" >/dev/null 2>&1; then
