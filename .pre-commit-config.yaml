@@ -2,18 +2,32 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
-    - id: check-yaml
-    - id: end-of-file-fixer
-    - id: trailing-whitespace
-    - id: check-shebang-scripts-are-executable
-    - id: check-executables-have-shebangs
-
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: ".(md|rst)$"
+      - id: check-shebang-scripts-are-executable
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+      - id: check-added-large-files
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
+        args: ["-d relaxed"]
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.12.0-2
+    hooks:
+      - id: shfmt
   - repo: local
     hooks:
-    - id: shellcheck
-      name: shellcheck
-      description: Test shell scripts with shellcheck
-      entry: shellcheck
-      language: python
-      types: [shell]
-      require_serial: true
+      - id: shellcheck
+        name: shellcheck
+        description: Test shell scripts with shellcheck
+        entry: shellcheck
+        language: system
+        types: [shell]
+        require_serial: true
+        args:
+          - --external-sources
