@@ -23,11 +23,11 @@ $ yay -Sy snippy-snippet
 
 ```bash
 # For your local user usage
-curl -fsSL https://raw.githubusercontent.com/BarbUk/snippy/master/snippy --create-dirs --output ~/.bin/snippy
+curl -fsSL https://github.com/barbuk/snippy/releases/latest/download/snippy --create-dirs --output ~/.bin/snippy
 chmod +x ~/.bin/snippy
 
 # Or install it systemwide
-sudo curl -fsSL https://raw.githubusercontent.com/BarbUk/snippy/master/snippy --output /usr/bin/snippy
+sudo curl -fsSL https://github.com/barbuk/snippy/releases/latest/download/snippy --output /usr/bin/snippy
 sudo chmod +x /usr/bin/snippy
 ```
 

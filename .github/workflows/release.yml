@@ -18,6 +18,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get Release Version
+        id: get_version
+        run: echo "RELEASE_VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+
+      - name: Update version in file
+        run: |
+          sed --in-place --regexp-extended --expression "s/(readonly version=).*$/\1$RELEASE_VERSION/" snippy
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -35,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: AUR package publisher
-        uses: BarbUk/aur-publish-docker-action@v1.0.5
+        uses: BarbUk/aur-publish-docker-action@v1.0.6
         with:
           package_name: snippy-snippet
           commit_username: 'BarbUk'
