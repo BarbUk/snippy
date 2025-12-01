@@ -223,39 +223,32 @@ init() {
 }
 
 usage() {
-  echo -e "${bold}$0${normal} $version"
-  echo
-  echo "Usage:"
-  echo -e "\t${bold}$0${normal} [OPTION] ACTION"
-  echo -e "\tSnippy snippets manager"
+  local usage
+  usage="${bold}$0${normal} $version
 
-  echo "Options"
-  echo -e "\t-h, --help: Show help"
-  echo -e "\t-s, --sort: true or false Sort snippet in rofi (default)"
-  echo -e "\t-m, --sorting-method: fzf (default) or levenshtein"
+${bold}Usage${normal}
+  ${bold}$0${normal} [OPTION] ACTION
+  Snippy snippets manager
 
-  echo "Actions"
-  echo -ne "\t${bold}gui${normal}"
-  echo -e "\t Browse snippet and paste it in the focused window ${underline}(default)${normal}"
+${bold}Snippet location${normal}
+  $snippets_directory
 
-  echo -ne "\t${bold}cli${normal}"
-  echo -e "\t list snippet in cli mode, only copy snippet in the paste buffer"
+${bold}Options${normal}
+  -h, --help \t\tShow help
+  -s, --sort ${underline}true${normal}|false Sort snippet in rofi
+  -m, --sorting-method \t${underline}fzf${normal} (default) or levenshtein
 
-  echo -ne "\t${bold}edit${normal}"
-  echo -e "\t Browse snippet and edit it"
+${bold}Actions${normal}
+  ${bold}gui${normal} \t\tBrowse snippet and paste it in the focused window ${underline}(default)${normal}
+  ${bold}cli${normal} \t\tlist snippet in cli mode, only copy snippet in the paste buffer
+  ${bold}edit${normal} \t\tBrowse snippet and edit it
+  ${bold}add${normal} <name> \tAdd a new snippet
+  ${bold}list${normal} \t\tlist snippet
+  ${bold}cat${normal} \t\tlist category
+  ${bold}completion${normal} \tbash completion. Use it with: eval \"\$(snippy completion)\"
+  "
 
-  echo -ne "\t${bold}add${normal} snippet_name"
-  echo -e "\t Add a new snippet"
-
-  echo -ne "\t${bold}list${normal}"
-  echo -e "\t list snippet"
-
-  echo -ne "\t${bold}cat${normal}"
-  echo -e "\t list category"
-
-  echo -ne "\t${bold}completion${normal}"
-  echo -e "\t bash completion"
-
+  echo -e "$usage"
   exit
 }
 
