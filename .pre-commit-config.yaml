@@ -31,3 +31,7 @@ repos:
         require_serial: true
         args:
           - --external-sources
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.18.0
+    hooks:
+      - id: zizmor
