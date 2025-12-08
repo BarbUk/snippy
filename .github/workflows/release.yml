@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Update version in file
         run: |
@@ -24,7 +24,7 @@ jobs:
           sed --in-place --regexp-extended --expression "s/(readonly version=).*$/\1${{github.ref_name}}/" snippy
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           draft: false
           prerelease: false
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: AUR package publisher
-        uses: BarbUk/aur-publish-docker-action@v1.0.6
+        uses: BarbUk/aur-publish-docker-action@df7d13e612b5ac8a25a039a301fcdeafce200554 # v1.0.6
         with:
           package_name: snippy-snippet
           commit_username: 'BarbUk'
