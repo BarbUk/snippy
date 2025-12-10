@@ -20,6 +20,20 @@ repos:
     rev: v3.12.0-2
     hooks:
       - id: shfmt
+
+  # Markdown
+  - repo: https://github.com/hukkin/mdformat
+    rev: 1.0.0
+    hooks:
+      - id: mdformat
+        additional_dependencies:
+          - mdformat-config
+  - repo: https://github.com/rvben/rumdl-pre-commit
+    rev: v0.0.191
+    hooks:
+      - id: rumdl
+        args: ["--fix"]
+
   - repo: local
     hooks:
       - id: shellcheck
