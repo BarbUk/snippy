@@ -8,6 +8,42 @@ A powerful Linux snippet manager for enhanced productivity and workflow automati
 
 Snippy is a versatile command-line snippet manager that seamlessly integrates with your desktop environment to provide quick access to frequently used text snippets, commands, and templates. With support for both X11 and Wayland display servers, Snippy offers intelligent clipboard management, dynamic placeholders, script execution, and cursor positioning to streamline your daily workflow.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Arch Linux](#arch-linux)
+  - [Manual Installation](#manual-installation)
+  - [Initial Setup](#initial-setup)
+- [Features](#features)
+  - [Intelligent Clipboard Management](#intelligent-clipboard-management)
+  - [Smart Cursor Positioning](#smart-cursor-positioning)
+  - [Dynamic Content Processing](#dynamic-content-processing)
+  - [Snippet Headers](#snippet-headers)
+  - [Visual Organization](#visual-organization)
+- [Usage](#usage)
+  - [Command Line Interface](#command-line-interface)
+  - [Examples](#examples)
+  - [Bash Completion](#bash-completion)
+- [Creating Snippets](#creating-snippets)
+  - [Basic Snippet](#basic-snippet)
+  - [Snippet with Variables](#snippet-with-variables)
+  - [Snippet with Placeholders](#snippet-with-placeholders)
+  - [Executable Snippet](#executable-snippet)
+  - [Script Snippet](#script-snippet)
+  - [No-Parse Snippet](#no-parse-snippet)
+  - [Rich Snippet (HTML)](#rich-snippet-html)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
+- [Platform Support](#platform-support)
+  - [Display Servers](#display-servers)
+  - [Desktop Environments](#desktop-environments)
+- [Configuration](#configuration)
+  - [Environment Variables](#environment-variables)
+  - [Snippet Location](#snippet-location)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+
 ## Prerequisites
 
 Snippy requires the following dependencies to be installed:
