@@ -44,32 +44,6 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
-## Prerequisites
-
-Snippy requires the following dependencies to be installed:
-
-**Core dependencies:**
-
-- `rofi` - Application launcher and menu
-- `fzf` - Command-line fuzzy finder
-- `jq` - JSON processor
-
-**For X11:**
-
-- `xsel` - Command-line clipboard utility
-- `xclip` - Clipboard interface
-- `xdotool` - X11 automation tool
-
-**For Wayland:**
-
-- `wtype` - Text input automation
-- `wl-clipboard` (`wl-copy` and `wl-paste`)
-
-**Optional (for enhanced features):**
-
-- `bat` or `highlight` - Syntax highlighting in preview
-- `perl` - Required for certain text processing features
-
 ## Installation
 
 ### Arch Linux
@@ -103,6 +77,32 @@ sudo curl -fsSL https://github.com/barbuk/snippy/releases/latest/download/snippy
   --output /usr/bin/snippy
 sudo chmod +x /usr/bin/snippy
 ```
+
+### Prerequisites
+
+Snippy requires the following dependencies to be installed:
+
+**Core dependencies:**
+
+- `rofi` - Application launcher and menu
+- `fzf` - Command-line fuzzy finder
+- `jq` - JSON processor
+
+**For X11:**
+
+- `xsel` - Command-line clipboard utility
+- `xclip` - Clipboard interface
+- `xdotool` - X11 automation tool
+
+**For Wayland:**
+
+- `wtype` - Text input automation
+- `wl-clipboard` (`wl-copy` and `wl-paste`)
+
+**Optional (for enhanced features):**
+
+- `bat` or `highlight` - Syntax highlighting in preview
+- `perl` - Required for certain text processing features
 
 ### Initial Setup
 
