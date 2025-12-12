@@ -10,10 +10,10 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
 - [Installation](#installation)
   - [Arch Linux](#arch-linux)
   - [Manual Installation](#manual-installation)
+  - [Prerequisites](#prerequisites)
   - [Initial Setup](#initial-setup)
 - [Features](#features)
   - [Intelligent Clipboard Management](#intelligent-clipboard-management)
