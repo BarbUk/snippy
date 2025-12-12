@@ -167,25 +167,24 @@ terminal/
 ### Command Line Interface
 
 ```bash
-snippy [OPTIONS] ACTION
+/usr/bin/snippy-snippet 1.0.11
+
+Usage:
+  /usr/bin/snippy-snippet [OPTION] ACTION
+  Snippy snippets manager
+Options
+  -h, --help: Show help
+  -s, --sort: true or false Sort snippet in rofi (default)
+  -m, --sorting-method: fzf (default) or levenshtein
+Actions
+  gui  Browse snippet and paste it in the focused window (default)
+  cli  list snippet in cli mode, only copy snippet in the paste buffer
+  edit   Browse snippet and edit it
+  add snippet_name   Add a new snippet
+  list   list snippet
+  cat  list category
+  completion   bash completion
 ```
-
-**Options:**
-
-- `-h, --help` - Display help information
-- `-v, --version` - Show version number
-- `-s, --sort <true|false>` - Enable/disable snippet sorting in rofi (default: true)
-- `-m, --sorting-method <fzf|levenshtein>` - Choose sorting algorithm (default: fzf)
-
-**Actions:**
-
-- `gui` - Launch rofi interface and paste snippet into focused window (default)
-- `cli` - Browse snippets in terminal using fzf, copy to clipboard only
-- `edit` - Select and edit a snippet in your `$EDITOR`
-- `add <name>` - Create a new snippet with the specified name
-- `list` - Display all available snippets
-- `cat` - List snippet categories (directories)
-- `completion` - Output bash completion script
 
 ### Examples
 
@@ -228,12 +227,6 @@ Enable tab completion for Snippy commands and options by adding this line to you
 ```bash
 eval "$(snippy completion)"
 ```
-
-This provides intelligent completion for:
-
-- All command-line options and actions
-- Boolean values for `--sort`
-- Sorting methods for `--sorting-method`
 
 ## Creating Snippets
 
@@ -349,33 +342,7 @@ Snippy has been tested and works with:
 
 - **X11 window managers:**
 
-  - i3
-  - bspwm
-  - XMonad
-  - dwm
-  - And others
-
-### Terminal Emulators
-
-Special support and cursor positioning works in:
-
-- Alacritty
-- Kitty
-- Foot
-- WezTerm
-- Konsole
-- Ghostty
-- Terminator
-- gnome-terminal
-- And most standard terminal emulators
-
-### Editors
-
-Enhanced cursor positioning support for:
-
-- Vim/Neovim (with `set title` enabled)
-- All GUI text editors
-- Most terminal-based editors
+  - All X11 window managers should be supported
 
 ## Configuration
 
@@ -401,24 +368,6 @@ Contributions are welcome! Here are ways you can help:
 - Improve documentation
 - Share your snippet collections and use cases
 
-### Development
-
-Snippy is a single bash script with minimal dependencies, making it easy to modify and extend.
-
-To test local changes:
-
-```bash
-# Clone the repository
-git clone https://github.com/barbuk/snippy.git
-cd snippy
-
-# Make your changes to the snippy script
-vim snippy
-
-# Test your changes
-./snippy
-```
-
 ## License
 
 Snippy is licensed under the [GNU General Public License v3.0](LICENSE).
@@ -427,9 +376,9 @@ Snippy is licensed under the [GNU General Public License v3.0](LICENSE).
 
 Snippy builds upon the work of several contributors:
 
-- **barbuk** - Current maintainer and primary developer ([GitHub](https://github.com/barbuk))
-- **opennomad** - Major enhancements ([Gist](https://gist.github.com/opennomad))
-- **mhwombat** - Original concept ([Arch Linux Forums](https://bbs.archlinux.org/viewtopic.php?id=71938))
-- **sessy** - Initial implementation
+- **barbuk** - Current maintainer ([GitHub](https://github.com/barbuk))
+- **opennomad** - Major enhancements ([Gist](https://gist.github.com/opennomad/15c4d624dce99066a82d))
+- **mhwombat** - Original concept ([Arch Linux Forums](https://bbs.archlinux.org/viewtopic.php?id=71938&p=2))
+- **sessy** - Initial implementation ([Arch Linux Forums](https://bbs.archlinux.org/viewtopic.php?id=71938))
 
 Special thanks to the open-source community for the excellent tools that make Snippy possible: rofi, fzf, and all the clipboard and automation utilities.
