@@ -8,6 +8,8 @@ A powerful Linux snippet manager for enhanced productivity and workflow automati
 
 Snippy is a versatile command-line snippet manager that seamlessly integrates with your desktop environment to provide quick access to frequently used text snippets, commands, and templates.
 
+<details>
+<summary>Table of Contents</summary>
 ## Table of Contents
 
 - [Installation](#installation)
@@ -43,6 +45,7 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
+</details>
 
 ## Installation
 
@@ -78,6 +81,9 @@ sudo curl -fsSL https://github.com/barbuk/snippy/releases/latest/download/snippy
 sudo chmod +x /usr/bin/snippy
 ```
 
+<details>
+
+<summary>Prerequisites</summary>
 ### Prerequisites
 
 Snippy requires the following dependencies to be installed:
@@ -103,6 +109,7 @@ Snippy requires the following dependencies to be installed:
 
 - `bat` or `highlight` - Syntax highlighting in preview
 - `perl` - Required for certain text processing features
+</details>
 
 ### Initial Setup
 
