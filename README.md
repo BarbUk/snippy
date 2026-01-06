@@ -10,6 +10,7 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
 
 <details>
 <summary>Table of Contents</summary>
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -84,6 +85,7 @@ sudo chmod +x /usr/bin/snippy
 <details>
 
 <summary>Prerequisites</summary>
+
 ### Prerequisites
 
 Snippy requires the following dependencies to be installed:
