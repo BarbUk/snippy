@@ -14,7 +14,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
       - name: Update version in file
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: AUR package publisher
-        uses: BarbUk/aur-publish-docker-action@df7d13e612b5ac8a25a039a301fcdeafce200554 # v1.0.6
+        uses: BarbUk/aur-publish-docker-action@5940ebc79b6f8ea7bddb2c5ed15d8c0d96396fa9 # v1.0.7
         with:
           package_name: snippy-snippet
           commit_username: 'BarbUk'
