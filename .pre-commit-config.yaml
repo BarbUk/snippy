@@ -57,6 +57,14 @@ repos:
     rev: v1.20.0
     hooks:
       - id: zizmor
+  # Markdown
+  - repo: https://github.com/rvben/rumdl-pre-commit
+    rev: v0.0.207
+    hooks:
+      - id: rumdl-fmt
+        args:
+          - --disable
+          - MD013
   # Bash
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: v3.12.0-2
