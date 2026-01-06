@@ -82,8 +82,9 @@ sudo curl -fsSL https://github.com/barbuk/snippy/releases/latest/download/snippy
 sudo chmod +x /usr/bin/snippy
 ```
 
-<details>
+### Initial Setup
 
+<details>
 <summary>Prerequisites</summary>
 
 ### Prerequisites
@@ -112,8 +113,6 @@ Snippy requires the following dependencies to be installed:
 - `bat` or `highlight` - Syntax highlighting in preview
 - `perl` - Required for certain text processing features
 </details>
-
-### Initial Setup
 
 On first run, Snippy will automatically create the configuration directory at `~/.config/snippy` with a sample snippet.
 
