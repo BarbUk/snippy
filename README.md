@@ -95,20 +95,20 @@ If you have the following snippets, the `terminal` icon will be displayed in rof
 # snippy -h
 
 Usage:
-	/usr/bin/snippy [OPTION] ACTION
-	Snippy snippets manager
+  /usr/bin/snippy [OPTION] ACTION
+  Snippy snippets manager
 Options
-	-h, --help: Show help
-	-s, --sort: true or false Sort snippet in rofi (default)
-	-m, --sorting-method: fzf (default) or levenshtein
+  -h, --help: Show help
+  -s, --sort: true or false Sort snippet in rofi (default)
+  -m, --sorting-method: fzf (default) or levenshtein
 Actions
-	gui	 Browse snippet and paste it in the focused window (default)
-	cli	 list snippet in cli mode, only copy snippet in the paste buffer
-	edit	 Browse snippet and edit it
-	add snippet_name	 Add a new snippet
-	list	 list snippet
-	cat	 list category
-	completion	 bash completion
+  gui  Browse snippet and paste it in the focused window (default)
+  cli  list snippet in cli mode, only copy snippet in the paste buffer
+  edit   Browse snippet and edit it
+  add snippet_name   Add a new snippet
+  list   list snippet
+  cat  list category
+  completion   bash completion
 ```
 
 ### Bash Completion
