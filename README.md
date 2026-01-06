@@ -1,6 +1,6 @@
 # Snippy
 
-Snippy is a linux snippet manager with powerfull features !
+Snippy is a linux snippet manager with powerful features !
 
 ![snippy](img/snippy.png)
 
@@ -67,9 +67,9 @@ https://cachedview.nl/#{clipboard_urlencode}
     ##noparse
     date --date="$(date +%F) -1 month" +%F
     ```
-* directly execute command begining by `$`
+* directly execute command beginning by `$`
 * execute bash script in `$snippets_directory/scripts`
-* copy script content when selection is selected by CTRL+Return, exemple:
+* copy script content when selection is selected by CTRL+Return, example:
   - with the following snippet: `$(date +%Y-%m-%d-%Hh%Mm%S)`
   - using Return will paste the current date
   - using CTRL+Return will paste the command directly
@@ -95,20 +95,20 @@ If you have the following snippets, the `terminal` icon will be displayed in rof
 # snippy -h
 
 Usage:
-	/usr/bin/snippy [OPTION] ACTION
-	Snippy snippets manager
+  /usr/bin/snippy [OPTION] ACTION
+  Snippy snippets manager
 Options
-	-h, --help: Show help
-	-s, --sort: true or false Sort snippet in rofi (default)
-	-m, --sorting-method: fzf (default) or levenshtein
+  -h, --help: Show help
+  -s, --sort: true or false Sort snippet in rofi (default)
+  -m, --sorting-method: fzf (default) or levenshtein
 Actions
-	gui	 Browse snippet and paste it in the focused window (default)
-	cli	 list snippet in cli mode, only copy snippet in the paste buffer
-	edit	 Browse snippet and edit it
-	add snippet_name	 Add a new snippet
-	list	 list snippet
-	cat	 list category
-	completion	 bash completion
+  gui  Browse snippet and paste it in the focused window (default)
+  cli  list snippet in cli mode, only copy snippet in the paste buffer
+  edit   Browse snippet and edit it
+  add snippet_name   Add a new snippet
+  list   list snippet
+  cat  list category
+  completion   bash completion
 ```
 
 ### Bash Completion

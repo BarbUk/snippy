@@ -9,7 +9,7 @@
 #  . ##noparse header in snippet to not parse
 #  . ##tmpfile header in snippet to replace $tmpfile by the temp filename used in the script
 #  . ##richsnippet header in snippet to use paste buffer in rich mode (To copy html content in gui)
-#  . execute command begining by $
+#  . execute command beginning by $
 #  . execute bash script in $snippets_directory/scripts
 #  . copy script content when selection is selected by CTRL+Return
 #  . icons ! Icon name is set from first dir name. If you have the following snippets, the terminal icon will be displayed in rofi
@@ -83,7 +83,7 @@ rofi_sort_method="-sorting-method fzf"
 
 # smarty like template engine which executes inline bash in (bashdown) strings (replaces variables with values e.g.)
 # @link http://github.com/coderofsalvation/bashdown
-# @dependancies: sed cat
+# @dependencies: sed cat
 # @example: echo 'hi $NAME it is $(date)' | bashdown
 # fetches a document and interprets bashsyntax in string (bashdown) templates
 # @param string - string with bash(down) syntax (usually surrounded by ' quotes instead of ")
@@ -210,7 +210,7 @@ init() {
   done
 
   if [ "$all_needed_programs_installed" = false ]; then
-    echo -e "\nPlease install the previous dependancies"
+    echo -e "\nPlease install the previous dependencies"
     exit 1
   fi
 
@@ -398,7 +398,7 @@ gui() {
 
 run() {
   local paste="${1:-true}"
-  local current_clipboard cursor_line cursor_line_position cursor_line cursor_position cursor_line_lenght
+  local current_clipboard cursor_line cursor_line_position cursor_line cursor_position cursor_line_length
 
   # just return if nothing was selected
   [ -z "${snippet}" ] && return 1
@@ -501,10 +501,10 @@ run() {
     cursor_line_position=$((file_lines - cursor_line_position + 1))
     # Extract cursor position
     cursor_position=$(strindex "$cursor_line" $placeholder_cursor)
-    # total cursor line lenght
-    cursor_line_lenght=${#cursor_line}
-    # Compute the final cursor position ( 8 is the lenght of the placeholder {cursor} )
-    cursor_position=$((cursor_line_lenght - cursor_position - 8))
+    # total cursor line length
+    cursor_line_length=${#cursor_line}
+    # Compute the final cursor position ( 8 is the length of the placeholder {cursor} )
+    cursor_position=$((cursor_line_length - cursor_position - 8))
     # remove the placeholder
     sed -i -e "s/$placeholder_cursor//g" "$tmpfile"
   fi
