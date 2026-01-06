@@ -6,7 +6,7 @@ A powerful Linux snippet manager for enhanced productivity and workflow automati
 
 ## Overview
 
-Snippy is a versatile command-line snippet manager that seamlessly integrates with your desktop environment to provide quick access to frequently used text snippets, commands, and templates. With support for both X11 and Wayland display servers, Snippy offers intelligent clipboard management, dynamic placeholders, script execution, and cursor positioning to streamline your daily workflow.
+Snippy is a versatile command-line snippet manager that seamlessly integrates with your desktop environment to provide quick access to frequently used text snippets, commands, and templates.
 
 ## Table of Contents
 
