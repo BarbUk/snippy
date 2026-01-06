@@ -32,7 +32,6 @@ repos:
     rev: v0.21.0
     hooks:
       - id: yamlfmt
-        language: system
   # EditorConfig
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
     rev: 3.6.0
@@ -53,7 +52,7 @@ repos:
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.10
     hooks:
-      - id: actionlint-system
+      - id: actionlint
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
     rev: v1.20.0
     hooks:
