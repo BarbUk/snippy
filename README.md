@@ -117,11 +117,15 @@ Snippy provides advanced clipboard handling that preserves your workflow:
 - **Automatic clipboard restoration** - Your original clipboard content is automatically restored after pasting a snippet
 - **Dynamic clipboard integration** - Use `{clipboard}` placeholder to embed current clipboard content into snippets
 
+<sub>`~/.config/snippy/create\ database`</sub>
+
 ```mysql
 CREATE DATABASE `{clipboard}` CHARACTER SET utf8 COLLATE utf8_general_ci;
 ```
 
 - **URL-encoded clipboard** - Use `{clipboard_urlencode}` for web-safe clipboard content
+
+<sub>`~/.config/snippy/cached\ url`</sub>
 
 ```text
 https://cachedview.nl/#{clipboard_urlencode}
@@ -133,11 +137,15 @@ Control exactly where the cursor lands after snippet insertion using the `{curso
 
 **Single-line positioning:**
 
+<sub>`~/.config/snippy/pre`</sub>
+
 ```html
 <pre>{cursor}</pre>
 ```
 
 **Multi-line positioning:**
+
+<sub>`~/.config/snippy/pre\ multiline`</sub>
 
 ```html
 <pre>
@@ -152,6 +160,8 @@ Snippy intelligently handles cursor movement in both CLI and GUI contexts, inclu
 **Variable expansion:**
 Snippy processes snippets through a bash-like template engine, allowing you to use variables and command substitution:
 
+<sub>`~/.config/snippy/date\ and\ user`</sub>
+
 ```bash
 Current date: $(date +%Y-%m-%d)
 Username: $USER
@@ -159,6 +169,8 @@ Username: $USER
 
 **Command execution:**
 Snippets starting with `$` are executed as commands, and their output is pasted:
+
+<sub>`~/.config/snippy/date`</sub>
 
 ```bash
 $(date +%Y-%m-%d-%Hh%Mm%S)
@@ -176,13 +188,30 @@ Control snippet behavior with special headers:
 
 - `##noparse` - Disable variable expansion and command execution
 
+<sub>`~/.config/snippy/cmd\ last\ month`</sub>
+
 ```bash
 ##noparse
 date --date="$(date +%F) -1 month" +%F
 ```
 
-- `##tmpfile` - Access temporary file path via `$tmpfile` variable
+- `##tmpfile` - Create a tempfile accessible via `$tmpfile` variable
+
+<sub>`~/.config/snippy/test\ tmpfile`</sub>
+
+```bash
+##tmpfile
+$(xsel -b > $tmpfile; cat $tmpfile)
+```
+
 - `##richsnippet` - Enable HTML clipboard support for rich text pasting
+
+<sub>`~/.config/snippy/test\ html`</sub>
+
+```bash
+##richsnippet
+<strong>should be pasted as strong</strong>
+```
 
 ### Visual Organization
 
