@@ -1,13 +1,10 @@
 name: Release
-
 on:
   push:
     tags:
       - 'v*'
-
 permissions:
   contents: read
-
 jobs:
   release:
     name: Create Release
@@ -15,18 +12,15 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
-
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           persist-credentials: false
-
       - name: Update version in file
         run: |
           echo "updating version with: ${GITHUB_REF_NAME}"
           sed --in-place --regexp-extended --expression "s/(readonly version=).*$/\1${GITHUB_REF_NAME}/" snippy
-
       - name: Create Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
@@ -37,7 +31,6 @@ jobs:
             snippy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   aur-publish:
     name: Publish release
     needs: release
