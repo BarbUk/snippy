@@ -1,39 +1,67 @@
+default_install_hook_types:
+  - pre-commit
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
-      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: destroyed-symlinks
+      - id: detect-private-key
       - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: check-yaml
       - id: trailing-whitespace
         exclude: ".(md|rst)$"
-      - id: check-shebang-scripts-are-executable
-      - id: check-executables-have-shebangs
-      - id: check-merge-conflict
       - id: mixed-line-ending
-      - id: check-added-large-files
+      - id: check-json
+      - id: pretty-format-json
+        args:
+          - --autofix
+  # YAML
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.37.1
     hooks:
       - id: yamllint
         args: ["-d relaxed"]
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.21.0
+    hooks:
+      - id: yamlfmt
+  # EditorConfig
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 3.6.0
+    hooks:
+      - id: editorconfig-checker
+  # Spelling
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.41.0
+    hooks:
+      - id: typos
+  # Png
+  - repo: https://github.com/oxipng/oxipng
+    rev: v10.0.0
+    hooks:
+      - id: oxipng
+        args: ["-o", "4", "--strip", "safe", "--alpha"]
+  # Github action
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.10
+    hooks:
+      - id: actionlint
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.20.0
+    hooks:
+      - id: zizmor
+  # Bash
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: v3.12.0-2
     hooks:
       - id: shfmt
-
-  # Markdown
-  - repo: https://github.com/hukkin/mdformat
-    rev: 1.0.0
-    hooks:
-      - id: mdformat
-        additional_dependencies:
-          - mdformat-config
-  - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: v0.0.191
-    hooks:
-      - id: rumdl
-        args: ["--fix"]
-
   - repo: local
     hooks:
       - id: shellcheck
@@ -45,7 +73,3 @@ repos:
         require_serial: true
         args:
           - --external-sources
-  - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.18.0
-    hooks:
-      - id: zizmor
