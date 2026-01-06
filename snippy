@@ -512,9 +512,9 @@ run() {
   # Copy snippet in clipboard
   if is_rich_snippet "${snippets_directory}/${snippet}"; then
     if [[ $is_wayland ]]; then
-      wl-copy --type text/html -o <"$tmpfile"
+      wl-copy --type text/html -o < <(grep -vF '##richsnippet' "$tmpfile")
     else
-      xclip -target text/html -selection clipboard -in -loops 1 <"$tmpfile"
+      xclip -target text/html -selection clipboard -in -loops 1 < <(grep -vF '##richsnippet' "$tmpfile")
     fi
   else
     if [[ $is_wayland ]]; then
