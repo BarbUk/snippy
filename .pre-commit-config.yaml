@@ -24,7 +24,7 @@ repos:
           - --autofix
   # YAML
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.37.1
+    rev: v1.38.0
     hooks:
       - id: yamllint
         args: ["-d relaxed"]
@@ -39,12 +39,12 @@ repos:
       - id: editorconfig-checker
   # Spelling
   - repo: https://github.com/crate-ci/typos
-    rev: v1.41.0
+    rev: v1.43.3
     hooks:
       - id: typos
   # Png
   - repo: https://github.com/oxipng/oxipng
-    rev: v10.0.0
+    rev: v10.1.0
     hooks:
       - id: oxipng
         args: ["-o", "4", "--strip", "safe", "--alpha"]
@@ -54,12 +54,12 @@ repos:
     hooks:
       - id: actionlint
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.20.0
+    rev: v1.22.0
     hooks:
       - id: zizmor
   # Markdown
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: v0.0.209
+    rev: v0.1.15
     hooks:
       - id: rumdl-fmt
         args:
