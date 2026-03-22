@@ -64,7 +64,7 @@ repos:
       - id: rumdl-fmt
         args:
           - --disable
-          - MD013
+          - MD013,MD033
   # Bash
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: 2a30809d16bc7a60d9b97353c797f42b510d3368 # frozen: v3.12.0-2
