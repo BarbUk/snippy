@@ -14,7 +14,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Update version in file
@@ -22,19 +22,15 @@ jobs:
           echo "updating version with: ${GITHUB_REF_NAME}"
           sed --in-place --regexp-extended --expression "s/(readonly version=).*$/\1${GITHUB_REF_NAME}/" snippy
       - name: Create Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-        with:
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-          files: |
-            snippy
+        run: |
+          gh release create --generate-notes --verify-tag "v${GITHUB_REF_NAME}" snippy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   aur-publish:
     name: Publish release
     needs: release
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: AUR package publisher
         uses: BarbUk/aur-publish-docker-action@5940ebc79b6f8ea7bddb2c5ed15d8c0d96396fa9 # v1.0.7
