@@ -436,8 +436,14 @@ run() {
     fi
 
   else
-    [[ ${snippet} =~ ^$ ]]
-    ${snippet##*$} 2>/dev/null >"$tmpfile" # execute as bashcommand
+    # Execute as bash command only if it starts with $
+    if [[ ${snippet} == \$* ]]; then
+      local cmd="${snippet#\$}"
+      eval "$cmd" 2>/dev/null >"$tmpfile" || true
+    else
+      error "Invalid command or snippet not found: $snippet"
+      return 1
+    fi
   fi
 
   # if tmpfile is empty at this step, nothing to do.
