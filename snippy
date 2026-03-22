@@ -54,7 +54,11 @@ readonly version=1.x-dev
 
 readonly snippets_directory=${XDG_CONFIG_HOME:-$HOME/.config}/snippy
 readonly fzf_args=(--select-1 --reverse --inline-info --multi --preview '( bat --style auto --color always --language bash {} 2> /dev/null || highlight --force -O ansi -l {} 2> /dev/null ) | head -200' -1)
-readonly focus_wait=0.15
+
+# Deps
+readonly core_deps=(rofi fzf jq gettext perl)
+readonly x11_deps=(xsel xclip xdotool)
+readonly wayland_deps=(wtype wl-copy wl-paste)
 
 # Detect Wayland.  focus_wait_ms is used, as wtype uses milliseconds instead of seconds.
 readonly is_wayland="${WAYLAND_DISPLAY:+1}"
@@ -183,11 +187,11 @@ move_cursor() {
 
 init() {
   # Check basic dependency
-  local all_needed_programs_installed=true needed_programs=(rofi fzf jq gettext)
+  local all_needed_programs_installed=true needed_programs=("${core_deps[@]}")
   if [[ $is_wayland ]]; then
-    needed_programs+=(wtype wl-copy wl-paste)
+    needed_programs+=("${wayland_deps[@]}")
   else
-    needed_programs+=(xsel xclip xdotool)
+    needed_programs+=("${x11_deps[@]}")
   fi
   for program in "${needed_programs[@]}"; do
     if ! command -v "$program" >/dev/null 2>&1; then
