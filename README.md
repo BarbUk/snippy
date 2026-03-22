@@ -96,6 +96,7 @@ Snippy requires the following dependencies to be installed:
 - `rofi` - Application launcher and menu
 - `fzf` - Command-line fuzzy finder
 - `jq` - JSON processor
+- `gettext` - Required for `envsubst` (variable expansion)
 
 **For X11:**
 
@@ -195,6 +196,8 @@ Use `Ctrl+Return` to paste the snippet source code instead of its processed outp
 Control snippet behavior with special headers:
 
 - `##noparse` - Disable variable expansion and command execution
+
+- `##bash` - Enable full Bash expansion (variables and command substitution). **Use only for trusted snippets.**
 
 <sub>`~/.config/snippy/cmd\ last\ month`</sub>
 
