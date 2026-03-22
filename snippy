@@ -80,6 +80,7 @@ action=gui
 snippet=
 rofi_sort="-sort"
 rofi_sort_method="-sorting-method fzf"
+richsnippet=false
 
 # smarty like template engine which executes inline bash in (bashdown) strings (replaces variables with values e.g.)
 # @link http://github.com/coderofsalvation/bashdown
@@ -168,11 +169,6 @@ is_vim() {
 strindex() {
   x="${1%%"$2"*}"
   [[ "$x" = "$1" ]] && echo -1 || echo "${#x}"
-}
-
-is_rich_snippet() {
-  file="$1"
-  grep -q "##richsnippet" "$file"
 }
 
 # Move the cursor up or left
@@ -516,11 +512,11 @@ run() {
   fi
 
   # Copy snippet in clipboard
-  if is_rich_snippet "${snippets_directory}/${snippet}"; then
+  if [ "$richsnippet" = true ]; then
     if [[ $is_wayland ]]; then
-      wl-copy --type text/html -o < <(grep -vF '##richsnippet' "$tmpfile")
+      wl-copy --type text/html -o <"$tmpfile"
     else
-      xclip -target text/html -selection clipboard -in -loops 1 < <(grep -vF '##richsnippet' "$tmpfile")
+      xclip -target text/html -selection clipboard -in -loops 1 <"$tmpfile"
     fi
   else
     if [[ $is_wayland ]]; then
