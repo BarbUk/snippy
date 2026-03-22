@@ -54,7 +54,11 @@ readonly version=1.x-dev
 
 readonly snippets_directory=${XDG_CONFIG_HOME:-$HOME/.config}/snippy
 readonly fzf_args=(--select-1 --reverse --inline-info --multi --preview '( bat --style auto --color always --language bash {} 2> /dev/null || highlight --force -O ansi -l {} 2> /dev/null ) | head -200' -1)
-readonly focus_wait=0.15
+
+# Deps
+readonly core_deps=(rofi fzf jq gettext perl)
+readonly x11_deps=(xsel xclip xdotool)
+readonly wayland_deps=(wtype wl-copy wl-paste)
 
 # Detect Wayland.  focus_wait_ms is used, as wtype uses milliseconds instead of seconds.
 readonly is_wayland="${WAYLAND_DISPLAY:+1}"
@@ -92,6 +96,21 @@ bashdown_simple() {
   while IFS= read -r line || [[ -n "$line" ]]; do
     line="$(eval "echo \"${line//\"/\\\"}\"")"
     echo "$line"
+  done
+}
+
+wait_for_focus() {
+  local target_class="$1" current_id
+  local timeout=10 # 500ms (10 * 0.05)
+  local count=0
+
+  while ((count < timeout)); do
+    current_id=$(get_focused_window_class)
+    if [[ "$current_id" == "$target_class" ]]; then
+      return
+    fi
+    sleep 0.05
+    ((count += 1))
   done
 }
 
@@ -183,11 +202,11 @@ move_cursor() {
 
 init() {
   # Check basic dependency
-  local all_needed_programs_installed=true needed_programs=(rofi fzf jq gettext)
+  local all_needed_programs_installed=true needed_programs=("${core_deps[@]}")
   if [[ $is_wayland ]]; then
-    needed_programs+=(wtype wl-copy wl-paste)
+    needed_programs+=("${wayland_deps[@]}")
   else
-    needed_programs+=(xsel xclip xdotool)
+    needed_programs+=("${x11_deps[@]}")
   fi
   for program in "${needed_programs[@]}"; do
     if ! command -v "$program" >/dev/null 2>&1; then
@@ -546,20 +565,22 @@ run() {
   if [ "$paste" = true ]; then
     # Paste into the current application.
     if is_gui; then
-      # We need a little pause to handle the time to focus on the window
-      sleep "$focus_wait"
+      # Wait for the original window to regain focus
+      if [[ -n ${original_window_class+x} ]]; then
+        wait_for_focus "$original_window_class"
+      fi
       # Paste
       if [[ $is_wayland ]]; then
         wtype -M ctrl v -m ctrl -s "$focus_wait_ms"
       else
-        xdotool key ctrl+v sleep "$focus_wait"
+        xdotool key ctrl+v
       fi
       move_cursor "Up" $cursor_line_position
     else
       if [[ $is_wayland ]]; then
         wtype -M ctrl -M shift v -m ctrl -m shift -s "$focus_wait_ms"
       else
-        xdotool key ctrl+shift+v sleep "$focus_wait"
+        xdotool key ctrl+shift+v
       fi
       if is_vim; then
         move_cursor "Up" $cursor_line_position
@@ -567,9 +588,6 @@ run() {
     fi
 
     move_cursor "Left" $cursor_position
-
-    # We need a little pause to handle the time to have the content of tmpfile pasted if is_gui
-    sleep "$focus_wait"
 
     # Restore current clipboard
     if [[ $is_wayland ]]; then
@@ -600,6 +618,7 @@ main() {
 
   case "$action" in
   'gui')
+    original_window_class=$(get_focused_window_class)
     gui
     run
     ;;
