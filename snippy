@@ -307,7 +307,7 @@ list() {
   local type="${1:-f}"
 
   find -L . -type "$type" |
-    grep -vE '^\.$|\.git|\.gitconfig|\.gitkeep|\.gitignore' |
+    grep -vE '^\.$|\.git|\.gitconfig|\.gitkeep|\.gitignore|\./\.pre-commit-config.yaml' |
     sed -e 's!\.\/!!' |
     sort
 }
