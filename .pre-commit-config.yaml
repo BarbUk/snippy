@@ -34,12 +34,12 @@ repos:
       - id: yamlfmt
   # EditorConfig
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 11ea70506fd878d26129b2b87746fd1a1f6b561b # frozen: 3.6.0
+    rev: bebfac867564fbd992e5b45379b4b0568d5cb85b # frozen: 3.6.1
     hooks:
       - id: editorconfig-checker
   # Spelling
   - repo: https://github.com/crate-ci/typos
-    rev: 9066e9940a8a05b98fb4733c62a726f83c9e57f8 # frozen: v1.43.3
+    rev: 631208b7aac2daa8b707f55e7331f9112b0e062d # frozen: v1.44.0
     hooks:
       - id: typos
   # Png
@@ -50,16 +50,16 @@ repos:
         args: ["-o", "4", "--strip", "safe", "--alpha"]
   # Github action
   - repo: https://github.com/rhysd/actionlint
-    rev: 0933c147c9d6587653d45fdcb4c497c57a65f9af # frozen: v1.7.10
+    rev: 393031adb9afb225ee52ae2ccd7a5af5525e03e8 # frozen: v1.7.11
     hooks:
       - id: actionlint
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: b546b77c44c466a54a42af5499dcc0dcc1a3193f # frozen: v1.22.0
+    rev: ea2eb407b4cbce87cf0d502f36578950494f5ac9 # frozen: v1.23.1
     hooks:
       - id: zizmor
   # Markdown
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: cdceb72b1573885f7d5d954d74740f56c1baa766 # frozen: v0.1.15
+    rev: e8689b0f1c8828c81c5bde980a5e285e22787455 # frozen: v0.1.57
     hooks:
       - id: rumdl-fmt
         args:
