@@ -80,22 +80,14 @@ action=gui
 snippet=
 rofi_sort="-sort"
 rofi_sort_method="-sorting-method fzf"
+richsnippet=false
 
-# smarty like template engine which executes inline bash in (bashdown) strings (replaces variables with values e.g.)
-# @link http://github.com/coderofsalvation/bashdown
-# @dependencies: sed cat
-# @example: echo 'hi $NAME it is $(date)' | bashdown
-# fetches a document and interprets bashsyntax in string (bashdown) templates
-# @param string - string with bash(down) syntax (usually surrounded by ' quotes instead of ")
-bashdown() {
-  while IFS= read -r line; do
-    line="$(eval "printf -- \"$(printf "%s" "$line" | sed 's/"/\\"/g')\"")"
-    echo -e "$line"
-  done
+# safe_expand expands only exported environment variables using envsubst.
+# This is much safer than eval-based bashdown.
+safe_expand() {
+  envsubst
 }
 
-# Simplified version of bashdown, use echo and bash var search and replace
-# Better handling of symbol char
 bashdown_simple() {
   while IFS= read -r line || [[ -n "$line" ]]; do
     line="$(eval "echo \"${line//\"/\\\"}\"")"
@@ -170,11 +162,6 @@ strindex() {
   [[ "$x" = "$1" ]] && echo -1 || echo "${#x}"
 }
 
-is_rich_snippet() {
-  file="$1"
-  grep -q "##richsnippet" "$file"
-}
-
 # Move the cursor up or left
 move_cursor() {
   local key=$1
@@ -196,7 +183,7 @@ move_cursor() {
 
 init() {
   # Check basic dependency
-  local all_needed_programs_installed=true needed_programs=(rofi fzf jq)
+  local all_needed_programs_installed=true needed_programs=(rofi fzf jq gettext)
   if [[ $is_wayland ]]; then
     needed_programs+=(wtype wl-copy wl-paste)
   else
@@ -311,7 +298,7 @@ list() {
   local type="${1:-f}"
 
   find -L . -type "$type" |
-    grep -vE '^\.$|\.git|\.gitconfig|\.gitkeep|\.gitignore' |
+    grep -vE '^\.$|\.git|\.gitconfig|\.gitkeep|\.gitignore|\./\.pre-commit-config.yaml' |
     sed -e 's!\.\/!!' |
     sort
 }
@@ -404,31 +391,57 @@ run() {
   [ -z "${snippet}" ] && return 1
 
   if [ -f "${snippets_directory}/${snippet}" ]; then
+    local snippet_file="${snippets_directory}/${snippet}"
+    local headers header
+    mapfile -t headers < <(head -1 "$snippet_file" | tr '[:space:]' '\n')
 
-    # Put the contents of the selected file into the paste buffer.
     # If file is empty, the content is the basename of the file
-    if [ ! -s "${snippets_directory}/${snippet}" ]; then
+    if [ ! -s "$snippet_file" ]; then
       content="$(basename "${snippet}")"
 
     # Custom selection, copy the script content without parsing
     elif [ "$script_content" = true ]; then
-      content="$(cat "${snippets_directory}/${snippet}")"
+      content="$(cat "$snippet_file")"
 
-    # don't parse file with the ##noparse header
-    elif grep -qE "^##noparse" "${snippets_directory}/${snippet}"; then
-      content="$(tail -n +2 "${snippets_directory}/${snippet}")"
+    # execute script with a shebang in scripts dir
+    elif [[ $(dirname "${snippet}") == 'scripts' ]] && [[ "${headers[0]}" == "#!"* ]]; then
+      local shebang
+      shebang=$(echo "${headers[0]}" | awk -F'!' '$0 ~ /^#/ && NR==1 {print $2}')
+      content="$($shebang "$snippet_file")"
 
-    # replace tmpfile for snippets with ##tmpfile header
-    elif grep -qE "^##tmpfile" "${snippets_directory}/${snippet}"; then
-      content="$(bashdown_simple <<<"$(tail -n +2 "${snippets_directory}/${snippet}" | sed "s%\$tmpfile%$tmpfile%g")")"
+    elif [[ ${headers[0]} == '##'* ]]; then
+      # Snippets with header handling
+      local raw_content
+      raw_content=$(tail -n +2 "$snippet_file")
+      content="$raw_content"
 
-    # execute bash script in scripts dir
-    elif [[ $(dirname "${snippet}") == 'scripts' ]] && grep -qE "^#!/bin/bash" "${snippets_directory}/${snippet}"; then
-      content="$(bash "${snippets_directory}/${snippet}")"
+      for header in "${headers[@]}"; do
+        # don't parse file with the ##noparse header
+        if [[ "$header" == "##noparse" ]]; then
+          content="$raw_content"
+          break
+        fi
 
-    # default action
+        # replace tmpfile for snippets with ##tmpfile header
+        if [[ "$header" == "##tmpfile" ]]; then
+          content="${content//\$tmpfile/$tmpfile}"
+        fi
+
+        # Opt-in full bash expansion with ##bash header
+        if [[ "$header" == "##bash" ]]; then
+          # WARNING: Using eval for full expansion. ONLY use for trusted snippets.
+          content="$(bashdown_simple <<<"$content")"
+        fi
+
+        # Rich text pasting
+        if [[ "$header" == "##richsnippet" ]]; then
+          richsnippet=true
+        fi
+      done
+
+    # default action: safe variable expansion only
     else
-      content="$(bashdown_simple <"${snippets_directory}/${snippet}")"
+      content="$(safe_expand <"$snippet_file")"
     fi
 
     if [ -n "$content" ]; then
@@ -436,8 +449,14 @@ run() {
     fi
 
   else
-    [[ ${snippet} =~ ^$ ]]
-    ${snippet##*$} 2>/dev/null >"$tmpfile" # execute as bashcommand
+    # Execute as bash command only if it starts with $
+    if [[ ${snippet} == \$* ]]; then
+      local cmd="${snippet#\$}"
+      eval "$cmd" 2>/dev/null >"$tmpfile" || true
+    else
+      error "Invalid command or snippet not found: $snippet"
+      return 1
+    fi
   fi
 
   # if tmpfile is empty at this step, nothing to do.
@@ -510,11 +529,11 @@ run() {
   fi
 
   # Copy snippet in clipboard
-  if is_rich_snippet "${snippets_directory}/${snippet}"; then
+  if [ "$richsnippet" = true ]; then
     if [[ $is_wayland ]]; then
-      wl-copy --type text/html -o < <(grep -vF '##richsnippet' "$tmpfile")
+      wl-copy --type text/html -o <"$tmpfile"
     else
-      xclip -target text/html -selection clipboard -in -loops 1 < <(grep -vF '##richsnippet' "$tmpfile")
+      xclip -target text/html -selection clipboard -in -loops 1 <"$tmpfile"
     fi
   else
     if [[ $is_wayland ]]; then
