@@ -99,6 +99,21 @@ bashdown_simple() {
   done
 }
 
+wait_for_focus() {
+  local target_class="$1" current_id
+  local timeout=10 # 500ms (10 * 0.05)
+  local count=0
+
+  while ((count < timeout)); do
+    current_id=$(get_focused_window_class)
+    if [[ "$current_id" == "$target_class" ]]; then
+      return
+    fi
+    sleep 0.05
+    ((count += 1))
+  done
+}
+
 get_focused_window_class() {
   if [[ $is_wayland ]]; then
     case "$DESKTOP_SESSION" in
@@ -550,20 +565,22 @@ run() {
   if [ "$paste" = true ]; then
     # Paste into the current application.
     if is_gui; then
-      # We need a little pause to handle the time to focus on the window
-      sleep "$focus_wait"
+      # Wait for the original window to regain focus
+      if [[ -n ${original_window_class+x} ]]; then
+        wait_for_focus "$original_window_class"
+      fi
       # Paste
       if [[ $is_wayland ]]; then
         wtype -M ctrl v -m ctrl -s "$focus_wait_ms"
       else
-        xdotool key ctrl+v sleep "$focus_wait"
+        xdotool key ctrl+v
       fi
       move_cursor "Up" $cursor_line_position
     else
       if [[ $is_wayland ]]; then
         wtype -M ctrl -M shift v -m ctrl -m shift -s "$focus_wait_ms"
       else
-        xdotool key ctrl+shift+v sleep "$focus_wait"
+        xdotool key ctrl+shift+v
       fi
       if is_vim; then
         move_cursor "Up" $cursor_line_position
@@ -571,9 +588,6 @@ run() {
     fi
 
     move_cursor "Left" $cursor_position
-
-    # We need a little pause to handle the time to have the content of tmpfile pasted if is_gui
-    sleep "$focus_wait"
 
     # Restore current clipboard
     if [[ $is_wayland ]]; then
@@ -604,6 +618,7 @@ main() {
 
   case "$action" in
   'gui')
+    original_window_class=$(get_focused_window_class)
     gui
     run
     ;;
