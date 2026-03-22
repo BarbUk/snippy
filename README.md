@@ -84,6 +84,8 @@ sudo chmod +x /usr/bin/snippy
 
 ### Initial Setup
 
+On first run, Snippy will automatically create the configuration directory at `~/.config/snippy` with a sample snippet.
+
 <details>
 <summary>Prerequisites</summary>
 
@@ -115,7 +117,44 @@ Snippy requires the following dependencies to be installed:
 - `perl` - Required for certain text processing features
 </details>
 
-On first run, Snippy will automatically create the configuration directory at `~/.config/snippy` with a sample snippet.
+### Debian / Ubuntu
+
+```bash
+# Base deps
+sudo apt install rofi fzf jq gettext-base perl
+
+# For wayland
+sudo apt install wtype wl-clipboard
+
+# For X11
+sudo apt install xsel xclip xdotool
+```
+
+### Fedora
+
+```bash
+# Base deps
+sudo dnf install rofi fzf jq gettext perl
+
+# For wayland
+sudo dnf install wtype wl-clipboard
+
+# For X11
+sudo dnf install xsel xclip xdotool
+```
+
+### Archlinux
+
+```bash
+# Base deps
+sudo pacman -Sy rofi fzf jq gettext perl
+
+# For wayland
+sudo pacman -Sy wtype wl-clipboard
+
+# For X11
+sudo pacman -Sy xsel xclip xdotool
+```
 
 ## Features
 
