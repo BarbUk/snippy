@@ -23,7 +23,7 @@ jobs:
           sed --in-place --regexp-extended --expression "s/(readonly version=).*$/\1${GITHUB_REF_NAME}/" snippy
       - name: Create Release
         run: |
-          gh release create --generate-notes --verify-tag "v${GITHUB_REF_NAME}" snippy
+          gh release create --generate-notes --verify-tag "${GITHUB_REF#refs/*/}" -t "${GITHUB_REF#refs/*/}" --draft snippy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   aur-publish:
