@@ -89,7 +89,7 @@ richsnippet=false
 # safe_expand expands only exported environment variables using envsubst.
 # This is much safer than eval-based bashdown.
 safe_expand() {
-  envsubst
+  envsubst "$(env | awk -F= '{ printf("%s%s ", "\\$", $1) }')"
 }
 
 bashdown_simple() {
