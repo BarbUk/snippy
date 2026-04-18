@@ -287,18 +287,24 @@ terminal/
 Usage:
   /usr/bin/snippy-snippet [OPTION] ACTION
   Snippy snippets manager
+
+Snippet location
+  ~/.config/snippy
+
 Options
-  -h, --help: Show help
-  -s, --sort: true or false Sort snippet in rofi (default)
-  -m, --sorting-method: fzf (default) or levenshtein
+  -h, --help 		Show help
+  -s, --sort true|false Sort snippet in rofi
+  -m, --sorting-method 	fzf (default) or levenshtein
+
 Actions
-  gui  Browse snippet and paste it in the focused window (default)
-  cli  list snippet in cli mode, only copy snippet in the paste buffer
-  edit   Browse snippet and edit it
-  add snippet_name   Add a new snippet
-  list   list snippet
-  cat  list category
-  completion   bash completion
+  gui 		Browse snippet and paste it in the focused window (default)
+  cli 		list snippet in cli mode, only copy snippet in the paste buffer
+  rofi 		list snippet in cli mode for rofi input. Accept an argument with the chosen snippet to paste it.
+  edit 		Browse snippet and edit it
+  add <name> 	Add a new snippet
+  list 		list snippet
+  cat 		list category
+  completion 	bash completion. Use it with: eval "$(snippy completion)"
 ```
 
 ### Examples
@@ -309,6 +315,14 @@ Actions
 snippy
 # or explicitly
 snippy gui
+```
+
+**Use it directly inside rofi:**
+
+If you already have a keybinding for rofi, you can add snippy as a mod:
+
+```bash
+rofi -theme-str 'element-icon { size: 3ch;}' -combi-modi 'snippets:snippy rofi' -show combi -modi combi
 ```
 
 **Browse snippets in terminal:**
