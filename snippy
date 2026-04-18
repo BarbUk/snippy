@@ -247,6 +247,7 @@ ${bold}Options${normal}
 ${bold}Actions${normal}
   ${bold}gui${normal} \t\tBrowse snippet and paste it in the focused window ${underline}(default)${normal}
   ${bold}cli${normal} \t\tlist snippet in cli mode, only copy snippet in the paste buffer
+  ${bold}rofi${normal} \t\tlist snippet in cli mode for rofi input. Accept an argument with the chosen snippet to paste it.
   ${bold}edit${normal} \t\tBrowse snippet and edit it
   ${bold}add${normal} <name> \tAdd a new snippet
   ${bold}list${normal} \t\tlist snippet
@@ -315,10 +316,15 @@ cli() {
 
 list() {
   local type="${1:-f}"
-
+  local filter=(cat)
+  if [[ "$type" == "icon" ]]; then
+    type='f'
+    filter=(sed -re 's_^([^/]*)/(.*)_&\x0icon\x1f\1_')
+  fi
   find -L . -type "$type" |
     grep -vE '^\.$|\.git|\.gitconfig|\.gitkeep|\.gitignore|\./\.pre-commit-config.yaml' |
     sed -e 's!\.\/!!' |
+    "${filter[@]}" |
     sort
 }
 
@@ -359,7 +365,7 @@ _snippy_completion() {
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     opts="-h --help -v --version -s --sort -m --sorting-method"
-    actions="gui cli edit add list cat completion"
+    actions="gui cli edit add list rofi cat completion"
 
     # Complete option values
     case "${prev}" in
@@ -393,7 +399,7 @@ gui() {
   # shellcheck disable=SC2086
   set +o errexit
 
-  snippet=$(list | sed -re 's_^([^/]*)/(.*)_&\x0icon\x1f\1_' | rofi "${rofi_args[@]}" -p '❯ ')
+  snippet=$(list 'icon' | rofi "${rofi_args[@]}" -p '❯ ')
 
   if [ $? -eq 10 ]; then
     script_content=true
@@ -561,7 +567,6 @@ run() {
       xsel --clipboard --input <"$tmpfile"
     fi
   fi
-
   if [ "$paste" = true ]; then
     # Paste into the current application.
     if is_gui; then
@@ -625,6 +630,15 @@ main() {
   'cli')
     cli
     run false
+    ;;
+  'rofi')
+    shift
+    if (($# > 0)); then
+      snippet="$*"
+      coproc run >/dev/null 2>&1
+      exit 0
+    fi
+    list 'icon'
     ;;
   'list')
     list
