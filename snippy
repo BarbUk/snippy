@@ -88,11 +88,11 @@ richsnippet=false
 
 # Check window manager env variable
 if [[ -n ${XDG_CURRENT_DESKTOP+x} ]]; then
-  current_desktop="$XDG_CURRENT_DESKTOP"
+  current_desktop="${XDG_CURRENT_DESKTOP,,}"
 elif [[ -n ${XDG_SESSION_DESKTOP+x} ]]; then
-  current_desktop="$XDG_SESSION_DESKTOP"
+  current_desktop="${XDG_SESSION_DESKTOP,,}"
 elif [[ -n ${DESKTOP_SESSION+x} ]]; then
-  current_desktop="$DESKTOP_SESSION"
+  current_desktop="${DESKTOP_SESSION,,}"
 fi
 
 # safe_expand expands only exported environment variables using envsubst.
