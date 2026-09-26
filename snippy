@@ -204,11 +204,11 @@ move_cursor() {
 
   local key_prefix=""
   if [[ "$is_wayland" ]]; then
-    key_prefix="-k"
+    key_prefix="-k "
   fi
   if [[ $count -gt 0 ]]; then
     until [ "$count" -eq 0 ]; do
-      keys+="${key_prefix} ${key} "
+      keys+="${key_prefix}${key} "
       ((count -= 1)) || true
     done
     # shellcheck disable=SC2086
