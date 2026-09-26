@@ -1,1 +1,4 @@
 .direnv/
+.envrc
+shell.nix
+result
