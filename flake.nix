@@ -49,12 +49,16 @@
           src = ./.;
 
           installPhase = ''
+            mkdir -p $out/share/doc/snippy
+            cp LICENSE $out/share/doc/snippy/LICENSE
+
             mkdir -p $out/bin
             cp snippy $out/bin
 
             wrapProgram $out/bin/snippy\
               --prefix PATH : ${pkgs.lib.makeBinPath deps}
           '';
+          meta.license = pkgs.lib.licenses.gpl3Plus;
         };
     in
     {
