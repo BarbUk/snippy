@@ -37,6 +37,7 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
   - [Script Snippet](#script-snippet)
   - [No-Parse Snippet](#no-parse-snippet)
   - [Rich Snippet (HTML)](#rich-snippet-html)
+  - [Manage Snippets via Home Manager](#manage-snippets-via-home-manager)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [Platform Support](#platform-support)
   - [Display Servers](#display-servers)
@@ -47,6 +48,7 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
+
 </details>
 
 ## Installation
@@ -74,6 +76,19 @@ snippy = {
   url = "github:BarbUk/snippy";
   inputs.nixpkgs.follows = "nixpkgs";
 };
+```
+
+Import the home manager module
+
+```nix
+imports = [
+  inputs.snippy.homeManagerModule
+];
+
+# Or add it to shared modules
+sharedModules = [
+  snippy.homeManagerModule
+];
 ```
 
 Enable it in your home configuration
@@ -144,6 +159,7 @@ Snippy requires the following dependencies to be installed:
 
 - `bat` or `highlight` - Syntax highlighting in preview
 - `perl` - Required for certain text processing features
+
 </details>
 
 ### Debian / Ubuntu
@@ -472,6 +488,16 @@ cat > ~/.config/snippy/html/bold-text << 'EOF'
 ##richsnippet
 <strong>{clipboard}</strong>
 EOF
+```
+
+### Manage snippets via Home Manager
+
+Snippets can be managed from the provided home manager module. Simply add the snippets to `programs.snippy.snippets`. For example, the following will create a snippet in `$HOME/.config/snippy/snippet/test`:
+
+```nix
+programs.snippy.snippets."snippet/test" = ''
+  Hello from home manager snippet!
+'';
 ```
 
 ## Keyboard Shortcuts
