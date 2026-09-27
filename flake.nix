@@ -115,10 +115,23 @@
 
               description = "Snippy package to install. Defaults to wayland + x11 support";
             };
+
+            snippets = lib.mkOption {
+              type = lib.types.attrsOf lib.types.lines;
+              default = { };
+              description = ''
+                Declaratively define your snippets as
+                programs.snippy.snippets."path/to/snippet" = 'echo "Hello from snippet"';
+              '';
+            };
           };
 
           config = lib.mkIf cfg.enable {
             home.packages = [ cfg.package ];
+            home.file = lib.mapAttrs' (path: text: {
+              name = ".config/snippy/${path}";
+              value = { inherit text; };
+            }) cfg.snippets;
           };
         };
     };
