@@ -15,6 +15,7 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
 
 - [Installation](#installation)
   - [Arch Linux](#arch-linux)
+  - [Nix](#nix)
   - [Manual Installation](#manual-installation)
   - [Prerequisites](#prerequisites)
   - [Initial Setup](#initial-setup)
@@ -36,6 +37,7 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
   - [Script Snippet](#script-snippet)
   - [No-Parse Snippet](#no-parse-snippet)
   - [Rich Snippet (HTML)](#rich-snippet-html)
+  - [Manage Snippets via Home Manager](#manage-snippets-via-home-manager)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [Platform Support](#platform-support)
   - [Display Servers](#display-servers)
@@ -46,6 +48,7 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
+
 </details>
 
 ## Installation
@@ -61,6 +64,47 @@ Install using your preferred [AUR helper](https://wiki.archlinux.org/index.php/A
 ```bash
 yay -S snippy-snippet
 ```
+
+### Nix
+
+The flake provides home manager modules with options to enable wayland / x11 support.
+
+Add it to your flake inputs
+
+```nix
+snippy = {
+  url = "github:BarbUk/snippy";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+
+Import the home manager module
+
+```nix
+imports = [
+  inputs.snippy.homeManagerModule
+];
+
+# Or add it to shared modules
+sharedModules = [
+  snippy.homeManagerModule
+];
+```
+
+Enable it in your home configuration
+
+```nix
+programs.snippy.enable = true;
+
+# Explicitly disable Wayland / X11 support
+# Defaults to installing both dependencies
+programs.snippy.enableWayland = false;
+programs.snippy.enableX11 = false;
+```
+
+Currently only `x86_64-linux` is supported (`aarch64-linux` support coming soon).
+
+`darwin` systems are currently **unsupported**. See [#34](https://github.com/BarbUk/snippy/issues/34)
 
 ### Manual Installation
 
@@ -115,6 +159,7 @@ Snippy requires the following dependencies to be installed:
 
 - `bat` or `highlight` - Syntax highlighting in preview
 - `perl` - Required for certain text processing features
+
 </details>
 
 ### Debian / Ubuntu
@@ -324,6 +369,8 @@ If you already have a keybinding for rofi, you can add snippy as a mod, it will 
 rofi -theme-str 'element-icon { size: 3ch;}' -combi-modi 'snippets:snippy' -show combi -modi combi
 ```
 
+*Note:* On Nix, rofi integration is currently **unsupported and WIP**. To use snippy, use the command `snippy` instead.
+
 **Browse snippets in terminal:**
 
 ```bash
@@ -441,6 +488,16 @@ cat > ~/.config/snippy/html/bold-text << 'EOF'
 ##richsnippet
 <strong>{clipboard}</strong>
 EOF
+```
+
+### Manage snippets via Home Manager
+
+Snippets can be managed from the provided home manager module. Simply add the snippets to `programs.snippy.snippets`. For example, the following will create a snippet in `$HOME/.config/snippy/snippet/test`:
+
+```nix
+programs.snippy.snippets."snippet/test" = ''
+  Hello from home manager snippet!
+'';
 ```
 
 ## Keyboard Shortcuts
