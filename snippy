@@ -587,7 +587,7 @@ run() {
     if [[ $is_wayland ]]; then
       wl-copy --type text/html -o <"$tmpfile"
     else
-      xclip -target text/html -selection clipboard -in -loops 1 <"$tmpfile"
+      xclip -target text/html -selection clipboard -loops 10 "$tmpfile"
     fi
   else
     if [[ $is_wayland ]]; then
