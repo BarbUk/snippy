@@ -58,7 +58,7 @@ readonly fzf_args=(--select-1 --reverse --inline-info --multi --preview '( bat -
 # Deps
 readonly core_deps=(rofi fzf jq gettext perl)
 readonly x11_deps=(xsel xclip xdotool)
-readonly wayland_deps=(wtype wl-copy wl-paste)
+readonly wayland_deps=(wl-copy wl-paste)
 
 # Detect Wayland.  focus_wait_ms is used, as wtype uses milliseconds instead of seconds.
 readonly is_wayland="${WAYLAND_DISPLAY:+1}"
@@ -121,6 +121,16 @@ wait_for_focus() {
     sleep 0.05
     ((count += 1))
   done
+}
+
+is_dotool_supported_desktop_environment() {
+  case "$current_desktop" in
+  kde)
+    return 0
+    ;;
+  esac
+
+  return 1
 }
 
 get_focused_window_class() {
@@ -213,7 +223,11 @@ move_cursor() {
     done
     # shellcheck disable=SC2086
     if [[ $is_wayland ]]; then
-      wtype -d 100 -P $keys
+      if is_dotool_supported_desktop_environment; then
+        echo "key $key" | dotool
+      else
+        wtype -d 100 -P $keys
+      fi
     else
       xdotool key --delay 0.1 $keys
     fi
@@ -225,6 +239,10 @@ init() {
   local all_needed_programs_installed=true needed_programs=("${core_deps[@]}")
   if [[ $is_wayland ]]; then
     needed_programs+=("${wayland_deps[@]}")
+    needed_programs+=(wtype)
+    if [[ "$current_desktop" == "kde" ]]; then
+      needed_programs+=(dotool)
+    fi
   else
     needed_programs+=("${x11_deps[@]}")
   fi
@@ -605,14 +623,22 @@ run() {
       fi
       # Paste
       if [[ $is_wayland ]]; then
-        wtype -M ctrl v -m ctrl -s "$focus_wait_ms"
+        if is_dotool_supported_desktop_environment; then
+          echo key ctrl+shift+v | dotool
+        else
+          wtype -M ctrl v -m ctrl -s "$focus_wait_ms"
+        fi
       else
         xdotool key ctrl+v
       fi
       move_cursor "Up" $cursor_line_position
     else
       if [[ $is_wayland ]]; then
-        wtype -M ctrl -M shift v -m ctrl -m shift -s "$focus_wait_ms"
+        if is_dotool_supported_desktop_environment; then
+          echo key ctrl+shift+v | dotool
+        else
+          wtype -M ctrl -M shift v -m ctrl -m shift -s "$focus_wait_ms"
+        fi
       else
         xdotool key ctrl+shift+v
       fi
