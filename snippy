@@ -125,7 +125,7 @@ wait_for_focus() {
 
 is_dotool_supported_desktop_environment() {
   case "$current_desktop" in
-  kde)
+  kde | gnome)
     return 0
     ;;
   esac
@@ -239,9 +239,13 @@ init() {
   local all_needed_programs_installed=true needed_programs=("${core_deps[@]}")
   if [[ $is_wayland ]]; then
     needed_programs+=("${wayland_deps[@]}")
-    needed_programs+=(wtype)
-    if [[ "$current_desktop" == "kde" ]]; then
+    if is_dotool_supported_desktop_environment; then
       needed_programs+=(dotool)
+    else
+      needed_programs+=(wtype)
+    fi
+    if [[ "$current_desktop" == "gnome" ]]; then
+      needed_programs+=(wofi)
     fi
   else
     needed_programs+=("${x11_deps[@]}")
@@ -438,7 +442,11 @@ gui() {
   # shellcheck disable=SC2086
   set +o errexit
 
-  snippet=$(list 'icon' | rofi "${rofi_args[@]}" -p '❯ ')
+  if [[ "$current_desktop" == "gnome" ]]; then
+    snippet=$(list 'icon' | wofi "${wofi_args[@]}" --prompt '❯ ')
+  else
+    snippet=$(list 'icon' | rofi "${rofi_args[@]}" -p '❯ ')
+  fi
 
   if [ $? -eq 10 ]; then
     script_content=true
@@ -672,6 +680,13 @@ main() {
     -theme-str 'element-icon { size: 2.35ch; }'
     -kb-accept-custom ""
     -kb-custom-1 "Ctrl+Return"
+  )
+
+  readonly wofi_args=(
+    --dmenu
+    --insensitive
+    --allow-images
+    --matching fuzzy
   )
 
   cd "${snippets_directory}" || exit
