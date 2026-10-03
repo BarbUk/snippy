@@ -152,8 +152,10 @@ Snippy requires the following dependencies to be installed:
 
 **For Wayland:**
 
-- `wtype` - Text input automation
 - `wl-clipboard` (`wl-copy` and `wl-paste`)
+- `wtype` - Text input automation (for Sway, Hyprland, Niri)
+- `dotool` - Text input automation (required for KDE Plasma and GNOME)
+- `wofi` - Application launcher and menu (used on GNOME instead of `rofi`)
 
 **Optional (for enhanced features):**
 
@@ -168,8 +170,14 @@ Snippy requires the following dependencies to be installed:
 # Base deps
 sudo apt install rofi fzf jq gettext-base perl
 
-# For wayland
+# For wayland (Sway, Hyprland, Niri)
 sudo apt install wtype wl-clipboard
+
+# For GNOME on Wayland
+sudo apt install wofi
+
+# For KDE / GNOME on Wayland
+# dotool can be compiled from source (https://git.sr.ht/~geb/dotool)
 
 # For X11
 sudo apt install xsel xclip xdotool
@@ -181,8 +189,14 @@ sudo apt install xsel xclip xdotool
 # Base deps
 sudo dnf install rofi fzf jq gettext perl
 
-# For wayland
+# For wayland (Sway, Hyprland, Niri)
 sudo dnf install wtype wl-clipboard
+
+# For GNOME on Wayland
+sudo dnf install wofi
+
+# For KDE / GNOME on Wayland
+# dotool is available via Copr or can be compiled from source
 
 # For X11
 sudo dnf install xsel xclip xdotool
@@ -194,8 +208,14 @@ sudo dnf install xsel xclip xdotool
 # Base deps
 sudo pacman -Sy rofi fzf jq gettext perl
 
-# For wayland
+# For wayland (Sway, Hyprland, Niri)
 sudo pacman -Sy wtype wl-clipboard
+
+# For GNOME on Wayland
+sudo pacman -Sy wofi
+
+# For KDE / GNOME on Wayland (dotool from AUR)
+yay -S dotool
 
 # For X11
 sudo pacman -Sy xsel xclip xdotool
@@ -502,32 +522,39 @@ programs.snippy.snippets."snippet/test" = ''
 
 ## Keyboard Shortcuts
 
-When using the GUI mode with rofi:
+When using GUI mode with rofi:
 
 - **Enter** - Paste processed snippet (variables expanded, commands executed)
 - **Ctrl+Return** - Paste raw snippet content without processing
+- **Escape** - Cancel snippet selection
+
+When using GUI mode with wofi (on GNOME):
+
+- **Enter** - Paste processed snippet
 - **Escape** - Cancel snippet selection
 
 ## Platform Support
 
 ### Display Servers
 
-- **X11** - Full support with xdotool, xsel, and xclip
-- **Wayland** - Full support with wl-clipboard and wtype
+- **X11** - Full support with `xdotool`, `xsel`, and `xclip`
+- **Wayland** - Full support with `wl-clipboard`, `wtype` (wlroots compositors), and `dotool` (KDE Plasma and GNOME)
 
 ### Desktop Environments
 
 Snippy has been tested and works with:
 
-- **Wayland compositors:**
+- **Wayland compositors and desktop environments:**
 
-  - Sway
-  - Hyprland
-  - Niri
+  - Sway (uses `wtype` and `rofi`)
+  - Hyprland (uses `wtype` and `rofi`)
+  - Niri (uses `wtype` and `rofi`)
+  - KDE Plasma (uses `dotool` and `rofi`)
+  - GNOME (uses `dotool` and `wofi`)
 
 - **X11 window managers:**
 
-  - All X11 window managers should be supported
+  - All X11 window managers and desktop environments should be supported
 
 ## Configuration
 
