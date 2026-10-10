@@ -206,30 +206,31 @@ strindex() {
   [[ "$x" = "$1" ]] && echo -1 || echo "${#x}"
 }
 
-# Move the cursor up or left
-move_cursor() {
-  local key=$1
-  local count=$2
-  local keys="End "
+move_cursor_from_end() {
+  local count=$1
+  local key='Left' key_prefix="" keys=()
 
-  local key_prefix=""
-  if [[ "$is_wayland" ]]; then
-    key_prefix="-P "
-  fi
   if [[ $count -gt 0 ]]; then
-    until [ "$count" -eq 0 ]; do
-      keys+="${key_prefix}${key} "
-      ((count -= 1)) || true
-    done
-    # shellcheck disable=SC2086
-    if [[ $is_wayland ]]; then
-      if is_dotool_supported_desktop_environment; then
-        echo "key $key" | dotool
+    # Give the target application time to finish processing the paste
+    sleep 0.15
+
+    if [[ "$is_wayland" ]]; then
+      key_prefix="-P "
+    fi
+    if [[ $count -gt 0 ]]; then
+      until [ "$count" -eq 0 ]; do
+        keys+=("${key_prefix}${key}")
+        ((count -= 1)) || true
+      done
+      if [[ $is_wayland ]]; then
+        if is_dotool_supported_desktop_environment; then
+          printf "key %s \n" "${keys[*]}" | dotool
+        else
+          wtype -d 100 -P "${keys[@]}"
+        fi
       else
-        wtype -d 100 -P $keys
+        xdotool key --delay 0.1 "${keys[@]}"
       fi
-    else
-      xdotool key --delay 0.1 $keys
     fi
   fi
 }
@@ -457,7 +458,7 @@ gui() {
 
 run() {
   local paste="${1:-true}"
-  local current_clipboard cursor_line cursor_line_position cursor_line cursor_position cursor_line_length
+  local current_clipboard cursor_offset_from_end=0
 
   tmpfile=$(mktemp)
   readonly tmpfile
@@ -584,27 +585,10 @@ run() {
     perl -pi -e 'chomp if eof' "$tmpfile"
   fi
 
-  # define cursor position and line at 0, we don't need to go up or left if there is no {cursor} placeholder
-  cursor_line_position=0
-  cursor_position=0
-
   # Check if there is a {cursor} placeholder
   if grep -qF $placeholder_cursor "$tmpfile"; then
-    # retrieve the line number of the cursor placeholder
-    cursor_line_position=$(grep -n "$placeholder_cursor" "$tmpfile" | cut -d: -f1)
-    # retrieve the line
-    cursor_line=$(grep $placeholder_cursor "$tmpfile")
-    # calculate snippet total lines
-    file_lines=$(wc -l <"$tmpfile")
-    # determine the number of line to go up
-    cursor_line_position=$((file_lines - cursor_line_position + 1))
-    # Extract cursor position
-    cursor_position=$(strindex "$cursor_line" $placeholder_cursor)
-    # total cursor line length
-    cursor_line_length=${#cursor_line}
-    # Compute the final cursor position ( 8 is the length of the placeholder {cursor} )
-    cursor_position=$((cursor_line_length - cursor_position - 8))
-    # remove the placeholder
+    after_cursor="${content#*"$placeholder_cursor"}"
+    cursor_offset_from_end="${#after_cursor}"
     sed -i -e "s/$placeholder_cursor//g" "$tmpfile"
   fi
 
@@ -639,7 +623,6 @@ run() {
       else
         xdotool key ctrl+v
       fi
-      move_cursor "Up" $cursor_line_position
     else
       if [[ $is_wayland ]]; then
         if is_dotool_supported_desktop_environment; then
@@ -650,12 +633,9 @@ run() {
       else
         xdotool key ctrl+shift+v
       fi
-      if is_vim; then
-        move_cursor "Up" $cursor_line_position
-      fi
     fi
 
-    move_cursor "Left" $cursor_position
+    move_cursor_from_end "$cursor_offset_from_end"
 
     # Restore current clipboard
     if [[ $is_wayland ]]; then
