@@ -148,6 +148,9 @@ get_focused_window_class() {
     mango)
       mmsg get focusing-client | jq -r '.appid | ascii_downcase'
       ;;
+    somewm)
+      somewm-client --json eval 'return client.focus.class' | jq -r '.result | ascii_downcase'
+      ;;
     esac
   else
     xdotool getwindowfocus getwindowclassname | tr '[:upper:]' '[:lower:]'
@@ -168,6 +171,9 @@ get_focused_window_name() {
       ;;
     mango)
       mmsg get focusing-client | jq -r '.title | ascii_downcase'
+      ;;
+    somewm)
+      somewm-client --json eval 'return client.focus.name' | jq -r '.result | ascii_downcase'
       ;;
     esac
   else
