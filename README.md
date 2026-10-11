@@ -168,7 +168,7 @@ Snippy requires the following dependencies to be installed:
 
 ```bash
 # Base deps
-sudo apt install rofi fzf jq gettext-base perl
+sudo apt install rofi fzf jq gettext-base perl gawk
 
 # For wayland (Sway, Hyprland, Niri)
 sudo apt install wtype wl-clipboard

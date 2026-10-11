@@ -56,7 +56,7 @@ readonly snippets_directory=${XDG_CONFIG_HOME:-$HOME/.config}/snippy
 readonly fzf_args=(--select-1 --reverse --inline-info --multi --preview '( bat --style auto --color always --language bash {} 2> /dev/null || highlight --force -O ansi -l {} 2> /dev/null ) | head -200' -1)
 
 # Deps
-readonly core_deps=(rofi fzf jq gettext perl)
+readonly core_deps=(rofi fzf jq gettext perl gawk)
 readonly x11_deps=(xsel xclip xdotool)
 readonly wayland_deps=(wl-copy wl-paste)
 
@@ -533,7 +533,7 @@ run() {
   # replace {clipboard} by the clipboard content
   # use awk to handle correctly multiline clipboard
   if grep -q "$placeholder_clipboard" "$tmpfile"; then
-    env_clipboard="$current_clipboard" awk -i inplace -v placeholder="$placeholder_clipboard" '
+    env_clipboard="$current_clipboard" gawk -i inplace -v placeholder="$placeholder_clipboard" '
     {
         out = $0
         while ((i = index(out, placeholder)) > 0) {
@@ -547,7 +547,7 @@ run() {
   fi
 
   if grep -q "$placeholder_clipboard_urlencode" "$tmpfile"; then
-    awk -i inplace \
+    gawk -i inplace \
       -v clipboard="$(echo "$current_clipboard" | jq -sRr @uri)" \
       -v placeholder="$placeholder_clipboard_urlencode" \
       '{ gsub(placeholder, clipboard); print }' "$tmpfile"
