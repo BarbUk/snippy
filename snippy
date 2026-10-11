@@ -181,7 +181,7 @@ move_cursor_from_end() {
 
   if [[ $count -gt 0 ]]; then
     # Give the target application time to finish processing the paste
-    sleep 0.15
+    sleep 0.1
 
     if [[ "$is_wayland" ]] && ! is_dotool_supported_desktop_environment; then
       key_prefix="-P "
