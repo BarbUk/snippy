@@ -586,7 +586,7 @@ run() {
       # Paste
       if [[ $is_wayland ]]; then
         if is_dotool_supported_desktop_environment; then
-          echo key ctrl+shift+v | dotool
+          printf 'keydelay 1\nkeyhold 1\nkey ctrl+shift+v' | dotool
         else
           wtype -M ctrl v -m ctrl -s "$focus_wait_ms"
         fi
