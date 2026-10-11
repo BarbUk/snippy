@@ -177,7 +177,7 @@ strindex() {
 
 move_cursor_from_end() {
   local count=$1
-  local key='Left' key_prefix="" keys=()
+  local key='Left' key_prefix='' keys
 
   if [[ $count -gt 0 ]]; then
     # Give the target application time to finish processing the paste
@@ -188,19 +188,18 @@ move_cursor_from_end() {
     fi
 
     if [[ $count -gt 0 ]]; then
-      until [ "$count" -eq 0 ]; do
-        keys+=("${key_prefix}${key}")
-        ((count -= 1)) || true
-      done
+      keys=$(printf "%0.s$key_prefix$key " $(seq "$count"))
 
       if [[ $is_wayland ]]; then
         if is_dotool_supported_desktop_environment; then
-          printf "key %s \n" "${keys[*]}" | dotool
+          printf "keydelay 1\nkeyhold 1\nkey %s\n" "$keys" | dotool
         else
-          wtype -d 100 -P "${keys[@]}"
+          # shellcheck disable=SC2086
+          wtype -d 1 -P $keys
         fi
       else
-        xdotool key --delay 0.1 "${keys[@]}"
+        # shellcheck disable=SC2086
+        xdotool key --delay 0.1 $keys
       fi
     fi
   fi
